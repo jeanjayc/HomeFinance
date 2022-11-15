@@ -1,4 +1,5 @@
-﻿using HomeFinance.Domain.Models;
+﻿using HomeFinance.Application.Interfaces;
+using HomeFinance.Domain.Models;
 using HomeFinance.Infra.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -7,25 +8,25 @@ namespace HomeFinance.MVC.Controllers
 {
     public class FinancesController : Controller
     {
-        private readonly AppDbContext _context;
+        private readonly IFinancesService _service;
 
-        public FinancesController(AppDbContext context)
+        public FinancesController(IFinancesService service)
         {
-            _context = context;
+            _service = service;
         }
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Finances.ToListAsync());
+            var result = await _service.BuscarFinancas();
+            return View(result);
         }
         public async Task<IActionResult> Details(Guid? id)
         {
-            if (id == null || _context.Finances == null)
+            if (id == null || _service.BuscarFinancaPorId(id) == null)
             {
                 return NotFound();
             }
 
-            var finances = await _context.Finances
-                .FirstOrDefaultAsync(m => m.FinancesId == id);
+            var finances = await _service.BuscarFinancaPorId(id);
             if (finances == null)
             {
                 return NotFound();
@@ -42,20 +43,19 @@ namespace HomeFinance.MVC.Controllers
             if (ModelState.IsValid)
             {
                 finances.FinancesId = Guid.NewGuid();
-                _context.Add(finances);
-                await _context.SaveChangesAsync();
+                await _service.AdicionarNovasDividas(finances);
                 return RedirectToAction(nameof(Index));
             }
             return View(finances);
         }
         public async Task<IActionResult> Edit(Guid? id)
         {
-            if (id == null || _context.Finances == null)
+            if (id == null || _service.BuscarFinancaPorId(id) == null)
             {
                 return NotFound();
             }
 
-            var finances = await _context.Finances.FindAsync(id);
+            var finances = await _service.BuscarFinancaPorId(id);
             if (finances == null)
             {
                 return NotFound();
@@ -76,8 +76,7 @@ namespace HomeFinance.MVC.Controllers
             {
                 try
                 {
-                    _context.Update(finances);
-                    await _context.SaveChangesAsync();
+                    await _service.AtualizarDadosFinancas(finances);
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -97,13 +96,12 @@ namespace HomeFinance.MVC.Controllers
 
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null || _context.Finances == null)
+            if (id == null || _service.BuscarFinancaPorId(id) == null)
             {
                 return NotFound();
             }
 
-            var finances = await _context.Finances
-                .FirstOrDefaultAsync(m => m.FinancesId == id);
+            var finances = await _service.BuscarFinancaPorId(id);
             if (finances == null)
             {
                 return NotFound();
@@ -116,23 +114,25 @@ namespace HomeFinance.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            if (_context.Finances == null)
+            if (_service.BuscarFinancaPorId(id) == null)
             {
                 return Problem("Entity set 'AppDbContext.Finances'  is null.");
             }
-            var finances = await _context.Finances.FindAsync(id);
+            var finances = await _service.BuscarFinancaPorId(id);
             if (finances != null)
             {
-                _context.Finances.Remove(finances);
+                await _service.DeletarFinancas(id);
             }
-            
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool FinancesExists(Guid id)
         {
-          return _context.Finances.Any(e => e.FinancesId == id);
+            var result = _service.BuscarFinancaPorId(id);
+            if (result is null)
+                return false;
+
+            return true;
         }
     }
 }

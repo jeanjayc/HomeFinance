@@ -9,7 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\HomeFinance.Infra\HomeFinance.Infra.csproj" />
     <ProjectReference Include="..\HomeFinance.Models\HomeFinance.Domain.csproj" />
-    <ProjectReference Include="..\HomeFinance.MVC\HomeFinance.MVC.csproj" />
   </ItemGroup>
 
 </Project>
