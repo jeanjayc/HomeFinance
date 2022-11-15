@@ -17,23 +17,23 @@ namespace HomeFinanceTests.Application
             //Arrange
             var dividas = new List<Finances>();
 
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Terreno", DueDate = 15, Price = 500 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Santander", DueDate = 22, Price = 100 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Internet", DueDate = 10, Price = 30 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Emp.Nubank", DueDate = 10, Price = 375 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Jefferson", DueDate = 15, Price = 447 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "MEI", DueDate = 30, Price = 335 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Nubank", DueDate = 15, Price = 124 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "CDB", DueDate = 10, Price = 400 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Agua/Luz", DueDate = 10, Price = 250 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Vitoria", DueDate = 10, Price = 100 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Garagem", DueDate = 10, Price = 80 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Ap", DueDate = 15, Price = 510 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Condominio", DueDate = 15, Price = 20 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Academia", DueDate = 10, Price = 140 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Cartão NU", DueDate = 17, Price = 350 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Inter", DueDate = 22, Price = 51 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Gastos do Mes", DueDate = 10, Price = 300 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Terreno", DueDate = 15, Price = 500 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Santander", DueDate = 22, Price = 100 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Internet", DueDate = 10, Price = 30 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Emp.Nubank", DueDate = 10, Price = 375 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Jefferson", DueDate = 15, Price = 447 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "MEI", DueDate = 30, Price = 335 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Nubank", DueDate = 15, Price = 124 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "CDB", DueDate = 10, Price = 400 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Agua/Luz", DueDate = 10, Price = 250 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Vitoria", DueDate = 10, Price = 100 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Garagem", DueDate = 10, Price = 80 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Ap", DueDate = 15, Price = 510 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Condominio", DueDate = 15, Price = 20 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Academia", DueDate = 10, Price = 140 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Cartão NU", DueDate = 17, Price = 350 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Inter", DueDate = 22, Price = 51 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Gastos do Mes", DueDate = 10, Price = 300 });
 
 
             var calcDivida = new FinancesService();
@@ -53,23 +53,23 @@ namespace HomeFinanceTests.Application
             //Arrange
             var dividas = new List<Finances>();
 
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Terreno", DueDate = 15, Price = 500 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Santander", DueDate = 22, Price = 100 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Internet", DueDate = 10, Price = 30 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Emp.Nubank", DueDate = 10, Price = 375 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Jefferson", DueDate = 15, Price = 447 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "MEI", DueDate = 30, Price = 335 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Nubank", DueDate = 15, Price = 124 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "CDB", DueDate = 10, Price = 400 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Agua/Luz", DueDate = 10, Price = 250 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Vitoria", DueDate = 10, Price = 100 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Garagem", DueDate = 10, Price = 80 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Ap", DueDate = 15, Price = 510 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Condominio", DueDate = 15, Price = 20 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Academia", DueDate = 10, Price = 140 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Cartão NU", DueDate = 17, Price = 350 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Inter", DueDate = 22, Price = 51 });
-            dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Gastos do Mes", DueDate = 10, Price = 300 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Terreno", DueDate = 15, Price = 500 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Santander", DueDate = 22, Price = 100 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Internet", DueDate = 10, Price = 30 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Emp.Nubank", DueDate = 10, Price = 375 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Jefferson", DueDate = 15, Price = 447 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "MEI", DueDate = 30, Price = 335 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Nubank", DueDate = 15, Price = 124 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "CDB", DueDate = 10, Price = 400 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Agua/Luz", DueDate = 10, Price = 250 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Vitoria", DueDate = 10, Price = 100 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Garagem", DueDate = 10, Price = 80 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Ap", DueDate = 15, Price = 510 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Condominio", DueDate = 15, Price = 20 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Academia", DueDate = 10, Price = 140 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Cartão NU", DueDate = 17, Price = 350 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Inter", DueDate = 22, Price = 51 });
+            //dividas.Add(new Finances { FinancesId = Guid.NewGuid(), FinanceName = "Gastos do Mes", DueDate = 10, Price = 300 });
 
 
             var calcDivida = new FinancesService();

@@ -14,7 +14,7 @@ namespace HomeFinance.Application.Services
         {
             var dataHJ = DateTime.Now.Day;
 
-            var proxVencimento = vecimentosProximos.Where(div => div.DueDate - dataHJ == 1)
+            var proxVencimento = vecimentosProximos.Where(div => div.DueDate.Day - dataHJ == 1)
                 .Select(div => div.FinanceName).ToList();
 
             if (proxVencimento.Count is 0)

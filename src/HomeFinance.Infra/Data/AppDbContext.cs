@@ -4,23 +4,22 @@ using Microsoft.Extensions.Configuration;
 
 namespace HomeFinance.Infra.Data
 {
-    public class ApplicationContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public ApplicationContext() { }
-        public ApplicationContext(DbContextOptions<ApplicationContext> options): base(options) { }
+        protected readonly IConfiguration _configuration;
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Finances> Finances { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             if (!options.IsConfigured)
-            {
-                options.UseSqlServer("Connection");
-            }
+                options.UseNpgsql("User ID=postgres;Password=71321787;Host=localhost;Port=5432;Database=HomeFinance;Pooling=true;");
         }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
         }
     }
 }
