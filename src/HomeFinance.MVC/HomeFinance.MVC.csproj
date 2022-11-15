@@ -21,6 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\HomeFinance.Application\HomeFinance.Application.csproj" />
     <ProjectReference Include="..\HomeFinance.Infra\HomeFinance.Infra.csproj" />
     <ProjectReference Include="..\HomeFinance.Models\HomeFinance.Domain.csproj" />
   </ItemGroup>

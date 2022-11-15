@@ -1,4 +1,8 @@
+using HomeFinance.Application.Interfaces;
+using HomeFinance.Application.Services;
 using HomeFinance.Infra.Data;
+using HomeFinance.Infra.Interfaces;
+using HomeFinance.Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,6 +12,9 @@ var connectionString = builder.Configuration.GetConnectionString("Connection");
 
 builder.Services.AddEntityFrameworkNpgsql()
     .AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
+
+builder.Services.AddTransient<IFinanceRepository, FinancesRepository>();
+builder.Services.AddTransient<IFinancesService, FinancesService>();
 
 var app = builder.Build();
 
