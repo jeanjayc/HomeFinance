@@ -18,7 +18,8 @@ namespace HomeFinance.Infra.Migrations
                     idfinances = table.Column<Guid>(name: "id_finances", type: "uuid", nullable: false),
                     financesname = table.Column<string>(name: "finances_name", type: "VARCHAR(70)", nullable: false),
                     duedate = table.Column<DateTime>(name: "due_date", type: "date", nullable: false),
-                    price = table.Column<decimal>(type: "decimal", nullable: false)
+                    price = table.Column<decimal>(type: "decimal", nullable: false),
+                    pago = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {
