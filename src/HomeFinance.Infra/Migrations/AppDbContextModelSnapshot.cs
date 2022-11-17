@@ -38,6 +38,10 @@ namespace HomeFinance.Infra.Migrations
                         .HasColumnType("VARCHAR(70)")
                         .HasColumnName("finances_name");
 
+                    b.Property<bool>("Pago")
+                        .HasColumnType("boolean")
+                        .HasColumnName("pago");
+
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal")
                         .HasColumnName("price");

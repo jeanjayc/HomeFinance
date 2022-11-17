@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeFinance.Infra.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221115144158_Initial")]
+    [Migration("20221117003941_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -40,6 +40,10 @@ namespace HomeFinance.Infra.Migrations
                         .IsRequired()
                         .HasColumnType("VARCHAR(70)")
                         .HasColumnName("finances_name");
+
+                    b.Property<bool>("Pago")
+                        .HasColumnType("boolean")
+                        .HasColumnName("pago");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal")
