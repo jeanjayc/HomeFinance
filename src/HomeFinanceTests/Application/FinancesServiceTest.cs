@@ -102,30 +102,7 @@ namespace HomeFinanceTests.Application
         public void SomarGastos_Deve_Somar_Total_De_Todas_As_Financas()
         {
             //Arrange
-            var dividas = new List<Finances>
-            {
-                new Finances
-                {
-                    FinancesId = Guid.NewGuid(),
-                    FinanceName = "Conta exemplo 1",
-                    DueDate = Convert.ToDateTime("2022-11-23"),
-                    Price = 500
-                },
-                new Finances
-                {
-                    FinancesId = Guid.NewGuid(),
-                    FinanceName = "conta exemplo 2",
-                    DueDate = Convert.ToDateTime("2022-11-15"),
-                    Price = 500
-                },
-                new Finances
-                {
-                    FinancesId = Guid.NewGuid(),
-                    FinanceName = "conta exemplo 3",
-                    DueDate = Convert.ToDateTime("2022-11-15"),
-                    Price = 200.30M
-                }
-            };
+            var dividas = new Fixture().Create<Finances>();
             var moqObj = new Mock<IFinanceRepository>();
             moqObj.Setup(fin => fin.GetAllFinances().Result).Returns(dividas);
 
