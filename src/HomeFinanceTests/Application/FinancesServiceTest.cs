@@ -102,7 +102,7 @@ namespace HomeFinanceTests.Application
         public void SomarGastos_Deve_Somar_Total_De_Todas_As_Financas()
         {
             //Arrange
-            var dividas = new Fixture().Create<Finances>();
+            var dividas = new Fixture().Create<List<Finances>>();
             var moqObj = new Mock<IFinanceRepository>();
             moqObj.Setup(fin => fin.GetAllFinances().Result).Returns(dividas);
 
