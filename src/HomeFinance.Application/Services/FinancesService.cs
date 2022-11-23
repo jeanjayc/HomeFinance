@@ -14,7 +14,18 @@ namespace HomeFinance.Application.Services
 
         public async Task AdicionarNovasDividas(Finances finance)
         {
-            await _financesRepository.AddNewFinance(finance);
+            try
+            {
+                if (finance is null) return;
+
+                await _financesRepository.AddNewFinance(finance);
+            }
+            catch (Exception ex)
+            {
+                //log
+                throw ex;
+            }
+            
         }
         public async Task<List<Finances>> BuscarFinancas()
         {
@@ -38,17 +49,17 @@ namespace HomeFinance.Application.Services
         }
         public async Task<decimal> BuscarValorTotal()
         {
-            var valores = await _financesRepository.GetAllFinances();
+            var valores = await BuscarFinancas();
 
             return valores.Sum(f => f.Price);
         }
 
         public async Task<string> BuscarVencimentoProximo()
         {
-            var vencimentosProximos = await _financesRepository.GetAllFinances();
+            var todasFinancas = await BuscarFinancas();
             var dataHJ = DateTime.Now.Day;
 
-            var proxVencimento = vencimentosProximos.Where(div => div.DueDate.Day - dataHJ == 1)
+            var proxVencimento = todasFinancas.Where(fin => fin.DueDate.Day - dataHJ == 1)
                 .Select(div => div.FinanceName).ToList();
 
             if (proxVencimento.Count is 0)
@@ -62,7 +73,7 @@ namespace HomeFinance.Application.Services
 
         public async Task<decimal> CalcularGastos(decimal renda)
         {
-            var financas = await _financesRepository.GetAllFinances();
+            var financas = await BuscarFinancas();
             var somaGastos = financas.Sum(f => f.Price);
 
             var valorAbatidoNaRenda = renda - somaGastos;
