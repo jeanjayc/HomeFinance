@@ -2,11 +2,9 @@
 using HomeFinance.Application.Services;
 using HomeFinance.Domain.Models;
 using HomeFinance.Infra.Interfaces;
-using HomeFinance.Infra.Repositories;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using Xunit;
 
@@ -16,7 +14,7 @@ namespace HomeFinanceTests.Application
     {
         [Trait("Category", "Calculos")]
         [Fact(DisplayName = "Adicionar novas Dividas")]
-        public void Deve_PegarESomar_Valor_TotalDas_Dividas()
+        public void Deve_Add_Novas_Dividas()
         {
             //Arrange
             var dividas = new Fixture().Create<Finances>();
@@ -29,7 +27,7 @@ namespace HomeFinanceTests.Application
             var somaNovaDivida = calcDivida.AdicionarNovasDividas(dividas);
 
             //Assert
-            moqRepo.Verify(f => f.AddNewFinance(dividas),Times.Once);
+            moqRepo.Verify(f => f.AddNewFinance(dividas), Times.Once);
         }
 
         [Trait("Category", "VencimentoDividas")]
@@ -60,11 +58,11 @@ namespace HomeFinanceTests.Application
             var vencimentoProx = calcDivida.BuscarVencimentoProximo().Result;
 
             //Assert
-            Assert.Contains("Contas", vencimentoProx,StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Contas", vencimentoProx, StringComparison.OrdinalIgnoreCase);
         }
         [Trait("Category", "Calculos")]
         [Fact(DisplayName = "Subtrair Gastos")]
-        public void SubtrairGastos_Deve_SomarTodosGastos_E_Abater_Renda_Mensal()
+        public void SubtrairGastos_Deve_SomarTodosGastos_E_Abater_DA_Renda_Mensal()
         {
             //Arrange
             var dividas = new List<Finances>
@@ -92,12 +90,54 @@ namespace HomeFinanceTests.Application
             var result = calcDivida.CalcularGastos(renda).Result;
 
             //Assert
-            Assert.Equal(valorEsperado.ToString(),result.ToString());
+            Assert.Equal(valorEsperado.ToString(), result.ToString());
         }
 
         public static IEnumerable<object[]> Data()
         {
             yield return new object[] { new List<decimal> { 100, 1000, 200 } };
+        }
+        [Trait("Category","Calculos")]
+        [Fact(DisplayName ="Somar total financas")]
+        public void SomarGastos_Deve_Somar_Total_De_Todas_As_Financas()
+        {
+            //Arrange
+            var dividas = new List<Finances>
+            {
+                new Finances
+                {
+                    FinancesId = Guid.NewGuid(),
+                    FinanceName = "Conta exemplo 1",
+                    DueDate = Convert.ToDateTime("2022-11-23"),
+                    Price = 500
+                },
+                new Finances
+                {
+                    FinancesId = Guid.NewGuid(),
+                    FinanceName = "conta exemplo 2",
+                    DueDate = Convert.ToDateTime("2022-11-15"),
+                    Price = 500
+                },
+                new Finances
+                {
+                    FinancesId = Guid.NewGuid(),
+                    FinanceName = "conta exemplo 3",
+                    DueDate = Convert.ToDateTime("2022-11-15"),
+                    Price = 200.30M
+                }
+            };
+            var moqObj = new Mock<IFinanceRepository>();
+            moqObj.Setup(fin => fin.GetAllFinances().Result).Returns(dividas);
+
+            var valorEsperado = dividas.Sum(div => div.Price);
+
+            //Act
+            var service = new FinancesService(moqObj.Object);
+            var result = service.SomarTotalFinancas().Result;
+
+            //Assert
+            Assert.Equal(valorEsperado.ToString(),result.ToString());
+
         }
     }
 }

@@ -80,5 +80,14 @@ namespace HomeFinance.Application.Services
 
             return valorAbatidoNaRenda;
         }
+
+        public async Task<decimal> SomarTotalFinancas()
+        {
+            var todasFinancas = await BuscarFinancas();
+
+            var result = todasFinancas.Sum(fin => fin.Price);
+
+            return result;
+        }
     }
 }
