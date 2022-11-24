@@ -32,7 +32,7 @@ namespace HomeFinanceTests.Application
 
         [Trait("Category","Buscas")]
         [Fact(DisplayName ="Buscar financa por Id")]
-        public void Finances_DeveBuscar_Financa_Por_Id()
+        public void Finances_BuscarFinancaPorId_DeveBuscarFinancaPeloId()
         {
             //Arrange
             var dividas = new Fixture().Create<List<Finances>>();
