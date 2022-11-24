@@ -33,7 +33,16 @@ namespace HomeFinance.Application.Services
         }
         public Task<Finances> BuscarFinancaPorId(Guid? id)
         {
-            return _financesRepository.GetFinanceById(id);
+            try
+            {
+                var result = _financesRepository.GetFinanceById(id);
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
         public async Task<Finances> BuscarFinancaPorNome(string name)
         {
