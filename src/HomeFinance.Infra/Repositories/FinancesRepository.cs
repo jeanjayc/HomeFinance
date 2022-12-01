@@ -2,23 +2,33 @@
 using HomeFinance.Infra.Data;
 using HomeFinance.Infra.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace HomeFinance.Infra.Repositories
 {
     public class FinancesRepository : IFinanceRepository
     {
         private readonly AppDbContext _context;
-
-        public FinancesRepository(AppDbContext context)
+        private readonly ILogger<FinancesRepository> _logger;
+        public FinancesRepository(AppDbContext context,ILogger<FinancesRepository> logger)
         {
+            _logger = logger;
             _context = context;
         }
 
         public async Task<Finances> AddNewFinance(Finances finance)
         {
-            _context.AddAsync(finance);
-            await _context.SaveChangesAsync();
-            return finance;
+            try
+            {
+                _context.AddAsync(finance);
+                await _context.SaveChangesAsync();
+                return finance;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erro ao adicionar, camada repository " + $"FinancaId:{finance.FinancesId}"+ "Erro: "+ ex.Message);
+                return null;
+            }
         }
         public async Task<Finances> GetFinanceById(Guid? id)
         {
