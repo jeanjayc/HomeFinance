@@ -25,11 +25,19 @@ namespace HomeFinance.Application.Services
                 //log
                 throw ex;
             }
-            
+
         }
         public async Task<List<Finances>> BuscarFinancas()
         {
-            return await _financesRepository.GetAllFinances();
+            try
+            {
+                return await _financesRepository.GetAllFinances();
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
         public Task<Finances> BuscarFinancaPorId(Guid? id)
         {
@@ -46,21 +54,25 @@ namespace HomeFinance.Application.Services
         }
         public async Task<Finances> BuscarFinancaPorNome(string name)
         {
-            return await _financesRepository.GetFinanceByName(name);
+            try
+            {
+                var result = await _financesRepository.GetFinanceByName(name);
+                return result;
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
         public async Task<Finances> AtualizarDadosFinancas(Finances finances)
         {
-            return await _financesRepository.UpdateFinance(finances);
+            var result = await _financesRepository.UpdateFinance(finances);
+            return result;
         }
         public async Task<Finances> DeletarFinancas(Guid id)
         {
             return await _financesRepository.DeleteFinances(id);
-        }
-        public async Task<decimal> BuscarValorTotal()
-        {
-            var valores = await BuscarFinancas();
-
-            return valores.Sum(f => f.Price);
         }
 
         public async Task<string> BuscarVencimentoProximo()

@@ -9,7 +9,6 @@ namespace HomeFinance.Application.Interfaces
         Task<Finances> BuscarFinancaPorId(Guid? id);
         Task<Finances> BuscarFinancaPorNome(string name);
         Task<List<Finances>> BuscarFinancas();
-        Task<decimal> BuscarValorTotal();
         Task<string> BuscarVencimentoProximo();
         Task<decimal> CalcularGastos(decimal renda);
         Task<Finances> DeletarFinancas(Guid id);

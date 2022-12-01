@@ -24,10 +24,28 @@ namespace HomeFinanceTests.Application
             var calcDivida = new FinancesService(moqRepo.Object);
 
             //Act
-            var somaNovaDivida = await calcDivida.AdicionarNovasDividas(dividas);
+            await calcDivida.AdicionarNovasDividas(dividas);
 
             //Assert
             moqRepo.Verify(f => f.AddNewFinance(dividas), Times.Once);
+        }
+
+        [Trait("Category","Buscas")]
+        [Fact(DisplayName = "Buscar todas as financas")]
+        public async void Finaces_BuscarFinancas_DeveRetornarTodasAsFinancas()
+        {
+            //Arrange
+            var dividas = new Fixture().Create<List<Finances>>();
+            var moqObj = new Mock<IFinanceRepository>();
+            moqObj.Setup(fin => fin.GetAllFinances().Result).Returns(dividas);
+
+            //Act
+            var service = new FinancesService(moqObj.Object);
+            var result = await service.BuscarFinancas();
+
+            //Assert
+            Assert.IsType<List<Finances>>(result);
+            Assert.NotNull(result);
         }
 
         [Trait("Category","Buscas")]
@@ -36,18 +54,37 @@ namespace HomeFinanceTests.Application
         {
             //Arrange
             var dividas = new Fixture().Create<List<Finances>>();
-            var moqObje = new Mock<IFinanceRepository>();
+            var moqObj = new Mock<IFinanceRepository>();
             var id = dividas.FirstOrDefault().FinancesId;
 
-            moqObje.Setup(fin => fin.GetFinanceById(id).Result).Returns(dividas.FirstOrDefault(x => x.FinancesId == id));
+            moqObj.Setup(fin => fin.GetFinanceById(id).Result).Returns(dividas.FirstOrDefault(x => x.FinancesId == id));
 
             //Act
-            var service = new FinancesService(moqObje.Object);
+            var service = new FinancesService(moqObj.Object);
             var result = service.BuscarFinancaPorId(id).Result;
 
             //Assert
             Assert.NotNull(result);
-            moqObje.Verify(fin => fin.GetFinanceById(id), Times.Once);
+            moqObj.Verify(fin => fin.GetFinanceById(id), Times.Once);
+        }
+
+        [Trait("Category", "Buscas")]
+        [Fact(DisplayName = "Buscar financas por nome")]
+        public async void Finances_BuscarFinancaPorNome_DeveBuscarFinancaPeloNome()
+        {
+            //Arrange
+            var dividas = new Fixture().Create<List<Finances>>();
+            var moqObj = new Mock<IFinanceRepository>();
+            var nome = dividas.FirstOrDefault().FinanceName;
+
+            moqObj.Setup(fin => fin.GetFinanceByName(nome).Result).Returns(dividas.FirstOrDefault(div => div.FinanceName == nome));
+
+            //Act
+            var service = new FinancesService(moqObj.Object);
+            var result = await service.BuscarFinancaPorNome(nome);
+
+            //Assert
+            Assert.NotNull(result);
         }
 
         [Trait("Category", "VencimentoDividas")]
@@ -123,5 +160,42 @@ namespace HomeFinanceTests.Application
             Assert.Equal(valorEsperado.ToString(),result.ToString());
 
         }
+
+        [Trait("Category","Buscas")]
+        [Fact(DisplayName ="Atualizar Financas")]
+        public void Finances_AtualizarDadosFinancas_DeveAtualizarDadosFinancas()
+        {
+            //Arrane
+            var dividaExistente = new Fixture().Create<Finances>();
+            var moqObj = new Mock<IFinanceRepository>();
+            moqObj.Setup(fin => fin.UpdateFinance(dividaExistente).Result).Returns(dividaExistente);
+
+            //Act
+            var service = new FinancesService(moqObj.Object);
+            var result = service.AtualizarDadosFinancas(dividaExistente);
+
+            //Assert
+            Assert.NotNull(result);
+            moqObj.Verify(fin => fin.UpdateFinance(dividaExistente).Result, Times.Once);
+        }
+
+        [Trait("Category", "Buscas")]
+        [Fact(DisplayName ="Deletar financa")]
+        public void Finances_DeletarFinancas_DeveDeletarFinancaPeloId()
+        {
+            //Arrange
+            var divida = new Fixture().Create<Finances>();
+            var moqObj = new Mock<IFinanceRepository>();
+            var idDivida = divida.FinancesId;
+
+            moqObj.Setup(fin => fin.DeleteFinances(idDivida).Result).Returns(divida);
+            //Act
+            var service = new FinancesService(moqObj.Object).DeletarFinancas(idDivida).Result;
+
+            //Arrange
+            Assert.NotNull(service);
+            moqObj.Verify(fin => fin.DeleteFinances(idDivida).Result,Times.Once);
+        }
+
     }
 }
