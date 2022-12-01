@@ -4,6 +4,7 @@ using HomeFinance.Infra.Data;
 using HomeFinance.Infra.Interfaces;
 using HomeFinance.Infra.Repositories;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,8 @@ builder.Services.AddEntityFrameworkNpgsql()
 
 builder.Services.AddTransient<IFinanceRepository, FinancesRepository>();
 builder.Services.AddTransient<IFinancesService, FinancesService>();
+
+builder.Host.UseSerilog(((ctx, config) => config.ReadFrom.Configuration(ctx.Configuration)));
 
 var app = builder.Build();
 

@@ -9,15 +9,25 @@ namespace HomeFinance.MVC.Controllers
     public class FinancesController : Controller
     {
         private readonly IFinancesService _service;
-
-        public FinancesController(IFinancesService service)
+        private readonly ILogger<FinancesController> _logger;
+        public FinancesController(IFinancesService service, ILogger<FinancesController> logger)
         {
             _service = service;
+            _logger = logger;
         }
         public async Task<IActionResult> Index()
         {
-            var result = await _service.BuscarFinancas();
-            return View(result);
+            try
+            {
+                var result = await _service.BuscarFinancas();
+                return View(result);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Problema ao carregar a INDEX", "Erro: " + ex.Message);
+                return StatusCode(500, "Erro Interno");
+            }
+            
         }
         public async Task<IActionResult> Details(Guid? id)
         {
@@ -78,7 +88,7 @@ namespace HomeFinance.MVC.Controllers
                 {
                     await _service.AtualizarDadosFinancas(finances);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (DbUpdateConcurrencyException ex)
                 {
                     if (!FinancesExists(finances.FinancesId))
                     {
@@ -86,7 +96,7 @@ namespace HomeFinance.MVC.Controllers
                     }
                     else
                     {
-                        throw;
+                        _logger.LogError("Método "+nameof(Edit),$"Erro: {ex.Message}");
                     }
                 }
                 return RedirectToAction(nameof(Index));
