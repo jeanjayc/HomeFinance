@@ -20,6 +20,12 @@ namespace HomeFinance.MVC.Controllers
             try
             {
                 var result = await _service.BuscarFinancas();
+
+                var totalDividas = await _service.SomarTotalFinancas();
+
+                ViewBag.Total = "Total: ";
+                ViewBag.TotalDividas = totalDividas;
+
                 return View(result);
             }
             catch (Exception ex)

@@ -31,7 +31,8 @@ namespace HomeFinance.Application.Services
         {
             try
             {
-                return await _financesRepository.GetAllFinances();
+                var result = await _financesRepository.GetAllFinances();
+                return result;
             }
             catch (Exception ex)
             {
@@ -80,7 +81,7 @@ namespace HomeFinance.Application.Services
             var todasFinancas = await BuscarFinancas();
             var dataHJ = DateTime.Now.Day;
 
-            var proxVencimento = todasFinancas.Where(fin => fin.DueDate.Day - dataHJ == 1)
+            var proxVencimento = todasFinancas.Where(fin => Convert.ToDateTime(fin.DueDate).Date.Day - dataHJ == 1)
                 .Select(div => div.FinanceName).ToList();
 
             if (proxVencimento.Count is 0)
