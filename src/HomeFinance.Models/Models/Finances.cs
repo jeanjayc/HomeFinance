@@ -7,8 +7,7 @@ namespace HomeFinance.Domain.Models
         [Column("id_finances")]
         public Guid FinancesId { get; set; }
         public string? FinanceName { get; set; }
-        public DateTime DueDate { get; set; }
-        public decimal Price { get; set; }
-        public bool Pago { get; set; }
+        public IEnumerable<Installments> Installments { get; set; }
+        public string? Owner { get; set; }
     }
 }
