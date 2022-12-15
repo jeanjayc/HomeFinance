@@ -34,13 +34,13 @@
                 @Html.DisplayFor(modelItem => item.FinanceName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DueDate)
+                @Html.DisplayFor(modelItem => item.Installments.FirstOrDefault().DueDate)
             </td>
             <td>
-                R$ @Html.DisplayFor(modelItem => item.Price)
+                    R$ @Html.DisplayFor(modelItem => item.Installments.FirstOrDefault().Price)
             </td>
              <td>
-                @Html.DisplayFor(modelItem => item.Pago)
+                @Html.DisplayFor(modelItem => item.Installments.FirstOrDefault().Paid)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.FinancesId">Edit</a> |
