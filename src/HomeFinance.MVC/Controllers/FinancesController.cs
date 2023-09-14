@@ -3,6 +3,7 @@ using HomeFinance.Domain.Models;
 using HomeFinance.Infra.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace HomeFinance.MVC.Controllers
 {
@@ -54,11 +55,13 @@ namespace HomeFinance.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("FinancesId,FinanceName,DueDate,Price")] Finances finances)
+        public async Task<IActionResult> Create(Finances finances)
         {
             if (ModelState.IsValid)
             {
                 finances.FinancesId = Guid.NewGuid();
+                finances.Installments.FirstOrDefault().FinancesId = finances.FinancesId;
+                finances.Installments.FirstOrDefault().InstallmentId = Guid.NewGuid(); 
                 await _service.AdicionarNovasDividas(finances);
                 return RedirectToAction(nameof(Index));
             }
@@ -81,7 +84,7 @@ namespace HomeFinance.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("FinancesId,FinanceName,DueDate,Price")] Finances finances)
+        public async Task<IActionResult> Edit(Guid id, Finances finances)
         {
             if (id != finances.FinancesId)
             {
@@ -124,6 +127,12 @@ namespace HomeFinance.MVC.Controllers
             }
 
             return View(finances);
+        }
+
+        public async Task<IActionResult> AlterarValorPago(AlterarValorPago data)
+        {
+           
+            return Ok();
         }
 
         [HttpPost, ActionName("Delete")]

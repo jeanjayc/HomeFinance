@@ -34,10 +34,9 @@ namespace HomeFinance.Infra.Migrations
                         .HasColumnType("VARCHAR(70)")
                         .HasColumnName("finances_name");
 
-                    b.Property<string>("Owner")
-                        .IsRequired()
-                        .HasColumnType("VARCHAR")
-                        .HasColumnName("owner");
+                    b.Property<long>("QtdInstallments")
+                        .HasColumnType("BIGINT")
+                        .HasColumnName("qtd_installments");
 
                     b.HasKey("FinancesId")
                         .HasName("id_finances");
@@ -49,33 +48,34 @@ namespace HomeFinance.Infra.Migrations
                 {
                     b.Property<Guid>("InstallmentId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("id_installment");
 
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("date")
-                        .HasColumnName("dueDate");
+                        .HasColumnName("due_date");
 
                     b.Property<Guid>("FinancesId")
-                        .HasColumnType("uuid");
+                        .HasColumnType("uuid")
+                        .HasColumnName("finance_id");
 
                     b.Property<int>("InstallmentsPaid")
                         .HasColumnType("INTEGER")
-                        .HasColumnName("installments Paid");
+                        .HasColumnName("installments_paid");
 
                     b.Property<bool>("Paid")
                         .HasColumnType("boolean")
-                        .HasColumnName("Paid");
+                        .HasColumnName("paid");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal")
-                        .HasColumnName("price");
+                        .HasColumnName("amount");
 
                     b.Property<int>("TotalInstallments")
                         .HasColumnType("INTEGER")
-                        .HasColumnName("total Installments");
+                        .HasColumnName("total_installments");
 
-                    b.HasKey("InstallmentId")
-                        .HasName("id_installment");
+                    b.HasKey("InstallmentId");
 
                     b.HasIndex("FinancesId");
 

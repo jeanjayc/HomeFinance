@@ -4,6 +4,8 @@
     ViewData["Title"] = "Página Inicial";
 }
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <h1>Contas</h1>
 
 <p>
@@ -31,16 +33,16 @@
 @foreach (var item in Model) {
         <tr>
             <td class="text-left">
-                @Html.DisplayFor(modelItem => item.FinanceName)
+                    @Html.DisplayFor(modelItem => item.FinanceName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Installments.FirstOrDefault().DueDate)
+                    @Html.DisplayFor(modelItem => item.Installments.FirstOrDefault().DueDate)
             </td>
-            <td>
-                    R$ @Html.DisplayFor(modelItem => item.Installments.FirstOrDefault().Price)
+            <td class="price">
+                    R$ <span id="parcela-valor">@Html.DisplayFor(modelItem => item.Installments.FirstOrDefault().Price)</span>
             </td>
              <td>
-                @Html.DisplayFor(modelItem => item.Installments.FirstOrDefault().Paid)
+                    <input id="paid" type="checkbox" @(item.Installments.FirstOrDefault().Paid) onclick="alterarSitParcela()" />
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.FinancesId">Edit</a> |
@@ -53,3 +55,53 @@
 </table>
 
 <h3>@ViewBag.Total @ViewBag.TotalDividas</h3>
+
+<script>
+    function alterarSitParcela()
+    {
+        var checkboxes = document.querySelectorAll("#paid");
+        var parcelas = document.querySelectorAll(".price");
+
+        for (var i = 0; i < checkboxes.length; i++) 
+        {
+            var checkbox = checkboxes[i];
+            var parcela = parcelas[i];
+
+            if (checkbox.checked)
+            {
+                var price = parcela.textContent;
+                ajax(price,true);
+            } else
+            {
+                var price = parcela.textContent;
+                ajax(price, false);
+            }
+            
+        }
+    }
+
+    function ajax(price,status){
+        var url = "/Finances/AlterarValorPago/";
+        var data = {
+            price: price,
+            status: status
+        };
+        console.log(data);
+        $.ajax({
+            url: url,
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data), 
+            success: function (response) {
+                console.log(response);
+            },
+            error: function (error) {
+                console.error('Erro:', error);
+            }
+        });
+
+
+
+
+    }
+</script>

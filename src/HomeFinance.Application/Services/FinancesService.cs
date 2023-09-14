@@ -19,7 +19,7 @@ namespace HomeFinance.Application.Services
             {
                 if (finance is null) return;
 
-                Convert.ToDateTime(finance.Installments.FirstOrDefault().DueDate).ToString("dd-MM-yyyy");
+                //Convert.ToDateTime(finance.Installments.FirstOrDefault().DueDate).ToString("dd-MM-yyyy");
 
                 await _financesRepository.AddNewFinance(finance);
             }
@@ -43,11 +43,11 @@ namespace HomeFinance.Application.Services
                 throw;
             }
         }
-        public Task<Finances> BuscarFinancaPorId(Guid? id)
+        public async Task<Finances> BuscarFinancaPorId(Guid? id)
         {
             try
             {
-                var result = _financesRepository.GetFinanceById(id);
+                var result = await _financesRepository.GetFinanceById(id);
                 return result;
             }
             catch (Exception ex)
@@ -108,7 +108,7 @@ namespace HomeFinance.Application.Services
 
             foreach(var item in financas)
             {
-                somaGastos = item.Installments.Sum(fin => fin.Price);
+                //somaGastos = item.Installments.Sum(fin => fin.Price);
             }
 
             var valorAbatidoNaRenda = renda - somaGastos;
@@ -128,6 +128,13 @@ namespace HomeFinance.Application.Services
             }
 
             return result;
+        }
+
+        public async Task<decimal> AlterarValorPago(decimal value)
+        {
+            var totalDividas = await SomarTotalFinancas();
+            var valorAtualizado = totalDividas - value;
+            return valorAtualizado;
         }
     }
 }

@@ -12,6 +12,7 @@ namespace HomeFinance.Application.Interfaces
         Task<string> BuscarVencimentoProximo();
         Task<decimal> CalcularGastos(decimal renda);
         Task<Finances> DeletarFinancas(Guid id);
+        Task<decimal> AlterarValorPago(decimal value);
         Task<decimal> SomarTotalFinancas();
     }
 }
