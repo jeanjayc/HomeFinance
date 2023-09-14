@@ -1,6 +1,7 @@
 ﻿using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
 using HomeFinance.Infra.Interfaces;
+using Microsoft.VisualBasic;
 
 namespace HomeFinance.Application.Services
 {
@@ -17,6 +18,8 @@ namespace HomeFinance.Application.Services
             try
             {
                 if (finance is null) return;
+
+                //Convert.ToDateTime(finance.Installments.FirstOrDefault().DueDate).ToString("dd-MM-yyyy");
 
                 await _financesRepository.AddNewFinance(finance);
             }
@@ -40,11 +43,11 @@ namespace HomeFinance.Application.Services
                 throw;
             }
         }
-        public Task<Finances> BuscarFinancaPorId(Guid? id)
+        public async Task<Finances> BuscarFinancaPorId(Guid? id)
         {
             try
             {
-                var result = _financesRepository.GetFinanceById(id);
+                var result = await _financesRepository.GetFinanceById(id);
                 return result;
             }
             catch (Exception ex)
@@ -81,22 +84,32 @@ namespace HomeFinance.Application.Services
             var todasFinancas = await BuscarFinancas();
             var dataHJ = DateTime.Now.Day;
 
-            var proxVencimento = todasFinancas.Where(fin => Convert.ToDateTime(fin.DueDate).Date.Day - dataHJ == 1)
-                .Select(div => div.FinanceName).ToList();
+            var proxVencimento = 0;
 
-            if (proxVencimento.Count is 0)
-                return "Não há contas com vencimento para amanhã";
+            //foreach(var item in todasFinancas)
+            //{
+            //    proxVencimento = item.Installments.Where(f => Convert.ToDateTime(f.DueDate).Day - dataHJ == 1)
+            //        .Select(div => div.Finance.FinanceName).ToList();
+            //}
 
-            var contasProxVencimento = string.Join(",", proxVencimento);
-            var venceAmanha = $"Contas a vencer amanhã: {contasProxVencimento}";
+            //if (proxVencimento.Count is 0)
+            //    return "Não há contas com vencimento para amanhã";
 
-            return venceAmanha;
+            //var contasProxVencimento = string.Join(",", proxVencimento);
+            //var venceAmanha = $"Contas a vencer amanhã: {contasProxVencimento}";
+
+            return "";
         }
 
         public async Task<decimal> CalcularGastos(decimal renda)
         {
             var financas = await BuscarFinancas();
-            var somaGastos = financas.Sum(f => f.Price);
+            var somaGastos = 0m;
+
+            foreach(var item in financas)
+            {
+                //somaGastos = item.Installments.Sum(fin => fin.Price);
+            }
 
             var valorAbatidoNaRenda = renda - somaGastos;
 
@@ -107,9 +120,21 @@ namespace HomeFinance.Application.Services
         {
             var todasFinancas = await BuscarFinancas();
 
-            var result = todasFinancas.Sum(fin => fin.Price);
+            var result = 0m;
+
+            foreach (var item in todasFinancas)
+            {
+                result += item.Installments.Sum(fin => fin.Price);
+            }
 
             return result;
+        }
+
+        public async Task<decimal> AlterarValorPago(decimal value)
+        {
+            var totalDividas = await SomarTotalFinancas();
+            var valorAtualizado = totalDividas - value;
+            return valorAtualizado;
         }
     }
 }

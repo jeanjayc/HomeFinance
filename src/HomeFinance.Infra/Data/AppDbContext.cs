@@ -10,6 +10,7 @@ namespace HomeFinance.Infra.Data
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
         public DbSet<Finances> Finances { get; set; }
+        public DbSet <Installments> Installments { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {

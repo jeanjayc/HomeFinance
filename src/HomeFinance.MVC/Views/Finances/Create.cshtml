@@ -4,45 +4,36 @@
     ViewData["Title"] = "Contas";
 }
 
-<h1>Contas</h1>
 
-<h4>Finances</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="FinanceName" class="control-label"></label>
-                <input asp-for="FinanceName" class="form-control" />
-                <span asp-validation-for="FinanceName" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DueDate" class="control-label"></label>
-                <input asp-for="DueDate" class="form-control" asp-format="{0:dd-MM-yy}" />
-                <span asp-validation-for="DueDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-          @*  <div class="form-group">
-                <label asp-for="Pago" class="control-label"></label>
-                <input type="checkbox" asp-for="Pago" />
-                <span asp-validation-for="Pago" class="text-danger"></span>
-            </div>*@
-            <div class="form-group">
-                <input type="submit" value="Adicionar" class="btn btn-primary" />
-            </div>
-        </form>
+<form id="createFinancesForm" method="post">
+    <div class="form-group">
+        <label for="FinanceName">Nome</label>
+        <input class="form-control" id="FinanceName" name="FinanceName" type="text" required />
     </div>
-</div>
+    <div id="installmentsContainer">
+        <div class="installment">
+            <label for="DueDate">vencimento</label>
+            <input class="form-control" name="Installments[0].DueDate" type="date" required />
 
-<div>
-    <a asp-action="Index">Voltar a lista completa</a>
-</div>
+            <label for="Price">Valor R$</label>
+            <input class="form-control" name="Installments[0].Price" type="number" step="0.01" required />
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+            <label for="TotalInstallments">Quantidade de parcelas</label>
+            <input class="form-control" name="Installments[0].TotalInstallments" type="number" required />
+
+            <label for="InstallmentsPaid">Parcelas Pagas</label>
+            <input class="form-control" name="Installments[0].InstallmentsPaid" type="number" required />
+
+           @* <label for="Paid">Paid</label>
+            <input class="form-control" name="Installments[0].Paid" type="checkbox" />*@
+        </div>
+    </div>
+
+    <button type="submit" class="btn btn-success">Registrar Divida</button>
+</form>
+
+
+
+
+
+

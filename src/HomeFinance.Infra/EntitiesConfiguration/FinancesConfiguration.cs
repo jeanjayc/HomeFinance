@@ -12,9 +12,12 @@ namespace HomeFinance.Infra.EntitiesConfiguration
 
             builder.HasKey(f => f.FinancesId).HasName("id_finances");
             builder.Property(f => f.FinanceName).HasColumnType("VARCHAR(70)").HasColumnName("finances_name").IsRequired();
-            builder.Property(f => f.DueDate).HasColumnType("date").HasColumnName("due_date").IsRequired();
-            builder.Property(f => f.Price).HasColumnType("decimal").HasColumnName("price").IsRequired();
-            builder.Property(f => f.Pago).HasColumnType("boolean").HasColumnName("pago").IsRequired();
+            builder.Property(f => f.QtdInstallments).HasColumnType("BIGINT").HasColumnName("qtd_installments").IsRequired();
+
+            builder.HasMany(f => f.Installments)
+                .WithOne(i => i.Finance)
+                .HasForeignKey(f => f.FinancesId);
+                
         }
     }
 }

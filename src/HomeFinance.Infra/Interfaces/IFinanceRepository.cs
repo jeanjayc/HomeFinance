@@ -10,6 +10,7 @@ namespace HomeFinance.Infra.Interfaces
         Task<Finances> GetFinanceById(Guid? id);
         Task<Finances> GetFinanceByName(string name);
         Task<Finances> UpdateFinance(Finances finance);
+        Task UpdatePaid(Guid? id,bool status);
         Task<Finances> DeleteFinances(Guid idFinance);
     }
 }

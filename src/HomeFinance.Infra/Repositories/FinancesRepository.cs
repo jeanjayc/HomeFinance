@@ -43,7 +43,9 @@ namespace HomeFinance.Infra.Repositories
         }
         public async Task<List<Finances>> GetAllFinances()
         {
-            return await _context.Finances.ToListAsync();
+            return await _context.Finances
+                .Include(f => f.Installments)
+                .ToListAsync();
         }
 
         public async Task<Finances> UpdateFinance(Finances finance)
@@ -61,5 +63,28 @@ namespace HomeFinance.Infra.Repositories
             return result; 
         }
 
+        public async Task UpdatePaid(Guid? idFinance, bool status)
+        {
+            try
+            {
+                var finance = await _context.Finances.Include(f => f.Installments).FirstOrDefaultAsync(f => f.FinancesId == idFinance);
+                if(finance != null)
+                {
+
+                    foreach (var installment in finance.Installments)
+                    {
+                        installment.Paid = status;
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+            
     }
 }
