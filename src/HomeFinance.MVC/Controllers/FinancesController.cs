@@ -1,9 +1,7 @@
 ﻿using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
-using HomeFinance.Infra.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
 
 namespace HomeFinance.MVC.Controllers
 {
@@ -21,6 +19,8 @@ namespace HomeFinance.MVC.Controllers
             try
             {
                 var result = await _service.BuscarFinancas();
+
+                if (result.Count == 0 || result is null) return View("Error");
 
                 var totalDividas = await _service.SomarTotalFinancas();
 
@@ -59,9 +59,6 @@ namespace HomeFinance.MVC.Controllers
         {
             if (ModelState.IsValid)
             {
-                finances.FinancesId = Guid.NewGuid();
-                finances.Installments.FirstOrDefault().FinancesId = finances.FinancesId;
-                finances.Installments.FirstOrDefault().InstallmentId = Guid.NewGuid(); 
                 await _service.AdicionarNovasDividas(finances);
                 return RedirectToAction(nameof(Index));
             }

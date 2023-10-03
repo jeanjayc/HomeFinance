@@ -18,16 +18,7 @@
                 <input asp-for="FinanceName" class="form-control" />
                 <span asp-validation-for="FinanceName" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Installments.FirstOrDefault().DueDate" class="control-label"></label>
-                <input asp-for="Installments.FirstOrDefault().DueDate" class="form-control" />
-                <span asp-validation-for="Installments.FirstOrDefault().DueDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Installments.FirstOrDefault().Price" class="control-label"></label>
-                <input asp-for="Installments.FirstOrDefault().Price" class="form-control" />
-                <span asp-validation-for="Installments.FirstOrDefault().Price" class="text-danger"></span>
-            </div>
+            
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
