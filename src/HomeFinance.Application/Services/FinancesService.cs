@@ -19,9 +19,8 @@ namespace HomeFinance.Application.Services
             {
                 if (finance is null) return;
 
-                //Convert.ToDateTime(finance.Installments.FirstOrDefault().DueDate).ToString("dd-MM-yyyy");
-
-                await _financesRepository.AddNewFinance(finance);
+                finance.FinancesId = Guid.NewGuid();
+                await _financesRepository.AdicionarNovaDivida(finance);
             }
             catch (Exception ex)
             {
@@ -34,7 +33,7 @@ namespace HomeFinance.Application.Services
         {
             try
             {
-                var result = await _financesRepository.GetAllFinances();
+                var result = await _financesRepository.ListarTodasDividas();
                 return result;
             }
             catch (Exception ex)
@@ -47,7 +46,7 @@ namespace HomeFinance.Application.Services
         {
             try
             {
-                var result = await _financesRepository.GetFinanceById(id);
+                var result = await _financesRepository.ObterFinancaPorId(id);
                 return result;
             }
             catch (Exception ex)
@@ -60,7 +59,7 @@ namespace HomeFinance.Application.Services
         {
             try
             {
-                var result = await _financesRepository.GetFinanceByName(name);
+                var result = await _financesRepository.ObterFinancaPorNome(name);
                 return result;
             }
             catch (Exception)
@@ -71,12 +70,12 @@ namespace HomeFinance.Application.Services
         }
         public async Task<Finances> AtualizarDadosFinancas(Finances finances)
         {
-            var result = await _financesRepository.UpdateFinance(finances);
+            var result = await _financesRepository.AtualizarFinanca(finances);
             return result;
         }
         public async Task<Finances> DeletarFinancas(Guid id)
         {
-            return await _financesRepository.DeleteFinances(id);
+            return await _financesRepository.DeletarFinanca(id);
         }
 
         public async Task<string> BuscarVencimentoProximo()
@@ -122,9 +121,9 @@ namespace HomeFinance.Application.Services
 
             var result = 0m;
 
-            foreach (var item in todasFinancas)
+            foreach(var finance in todasFinancas)
             {
-                result += item.Installments.Sum(fin => fin.Price);
+                result += finance.Price;
             }
 
             return result;

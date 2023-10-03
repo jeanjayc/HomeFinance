@@ -1,39 +1,41 @@
 ﻿@model HomeFinance.Domain.Models.Finances
 
 @{
-    ViewData["Title"] = "Contas";
+    ViewData["Title"] = "Nova Conta";
 }
 
+<div class="container">
+    <h2 class="mt-4">Criar Nova Conta</h2>
+    <form asp-action="Create" asp-controller="Finances" method="post">
 
-<form id="createFinancesForm" method="post">
-    <div class="form-group">
-        <label for="FinanceName">Nome</label>
-        <input class="form-control" id="FinanceName" name="FinanceName" type="text" required />
-    </div>
-    <div id="installmentsContainer">
-        <div class="installment">
-            <label for="DueDate">vencimento</label>
-            <input class="form-control" name="Installments[0].DueDate" type="date" required />
+        <h3 class="mt-4">Parcelas</h3>
 
-            <label for="Price">Valor R$</label>
-            <input class="form-control" name="Installments[0].Price" type="number" step="0.01" required />
+        <div class="form-row">
+            <div class="form-group col-md-3">
+                <label asp-for="FinanceName">Nome da Conta</label>
+                <input asp-for="FinanceName" class="form-control" id="FinanceName" name="FinanceName" type="text" required />
+            </div>
+            <div class="form-group col-md-3">
+                <label asp-for="DueDate" for="DueDate">Vencimento</label>
+                <input asp-for="DueDate" class="form-control" type="date" required />
+            </div>
 
-            <label for="TotalInstallments">Quantidade de parcelas</label>
-            <input class="form-control" name="Installments[0].TotalInstallments" type="number" required />
+            <div class="form-group col-md-3">
+                <label asp-for="Price" for="Price">Valor (R$)</label>
+                <input asp-for="Price" class="form-control" type="number" step="0.01" required />
+            </div>
 
-            <label for="InstallmentsPaid">Parcelas Pagas</label>
-            <input class="form-control" name="Installments[0].InstallmentsPaid" type="number" required />
+            <div class="form-group col-md-3">
+                <label asp-for="QtdInstallments" for="QtdInstallments">Parcelas</label>
+                <input asp-for="QtdInstallments" class="form-control" type="number" required />
+            </div>
 
-           @* <label for="Paid">Paid</label>
-            <input class="form-control" name="Installments[0].Paid" type="checkbox" />*@
+            <div class="form-group col-md-3">
+                <label asp-for="InstallmentsPaid" for="InstallmentsPaid">Parcelas Pagas</label>
+                <input asp-for="InstallmentsPaid" class="form-control" type="number" required />
+            </div>
         </div>
-    </div>
 
-    <button type="submit" class="btn btn-success">Registrar Divida</button>
-</form>
-
-
-
-
-
-
+        <button type="submit" class="btn btn-success mt-4">Registrar Dívida</button>
+    </form>
+</div>

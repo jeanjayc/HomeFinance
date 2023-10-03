@@ -30,57 +30,60 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td class="text-left">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-left">
                     @Html.DisplayFor(modelItem => item.FinanceName)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.Installments.FirstOrDefault().DueDate)
-            </td>
-            <td class="price">
-                    R$ <span id="parcela-valor">@Html.DisplayFor(modelItem => item.Installments.FirstOrDefault().Price)</span>
-            </td>
-             <td>
-                    <input id="paid" type="checkbox" @(item.Installments.FirstOrDefault().Paid) onclick="alterarSitParcela()" />
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.FinancesId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.FinancesId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.FinancesId">Delete</a>
-            </td>
-        </tr>
-}
+                </td>
+                <td class="text-left">
+                    @Html.DisplayFor(modelItem => item.DueDate)
+                </td>
+                <td class="text-left">
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td class="text-left">
+                    @{
+                        string statusAtual = (item.Paid ? "clique para marcar como não paga" : "clique para marcar como paga");
+                    }
+                    <a href="#" class="badge badge-pill @(item.Paid ? "badge-success" : "badge-danger") table-action-status"
+                       data-toggle="modal" data-target="#modalStatus" data-url="@Url.Action("AlterarValorPago", "Finances",new { item.FinancesId })" title="@statusAtual">
+                        @(item.Paid ? "PAGA" : "Pendente")
+                    </a>
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.FinancesId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.FinancesId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.FinancesId">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
 
 <h3>@ViewBag.Total @ViewBag.TotalDividas</h3>
 
 <script>
-    function alterarSitParcela()
-    {
+    function alterarSitParcela() {
         var checkboxes = document.querySelectorAll("#paid");
         var parcelas = document.querySelectorAll(".price");
 
-        for (var i = 0; i < checkboxes.length; i++) 
-        {
+        for (var i = 0; i < checkboxes.length; i++) {
             var checkbox = checkboxes[i];
             var parcela = parcelas[i];
 
-            if (checkbox.checked)
-            {
+            if (checkbox.checked) {
                 var price = parcela.textContent;
-                ajax(price,true);
-            } else
-            {
+                ajax(price, true);
+            } else {
                 var price = parcela.textContent;
                 ajax(price, false);
             }
-            
+
         }
     }
 
-    function ajax(price,status){
+    function ajax(price, status) {
         var url = "/Finances/AlterarValorPago/";
         var data = {
             price: price,
@@ -91,7 +94,7 @@
             url: url,
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(data), 
+            data: JSON.stringify(data),
             success: function (response) {
                 console.log(response);
             },

@@ -11,7 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeFinance.Infra", "src\Ho
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeFinance.MVC", "src\HomeFinance.MVC\HomeFinance.MVC.csproj", "{905F9965-0A09-4FD2-9928-8F04ECE9E20B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeFinanceTests", "src\HomeFinanceTests\HomeFinanceTests.csproj", "{AC9C7701-E4EE-4275-971F-FB41AFEB6D45}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeFinanceTests", "src\HomeFinanceTests\HomeFinanceTests.csproj", "{AC9C7701-E4EE-4275-971F-FB41AFEB6D45}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeFinance.Api", "src\HomeFinance.Api\HomeFinance.Api.csproj", "{CEED5534-C07B-4603-8B7D-B79F5963FA44}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{AC9C7701-E4EE-4275-971F-FB41AFEB6D45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AC9C7701-E4EE-4275-971F-FB41AFEB6D45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC9C7701-E4EE-4275-971F-FB41AFEB6D45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CEED5534-C07B-4603-8B7D-B79F5963FA44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CEED5534-C07B-4603-8B7D-B79F5963FA44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CEED5534-C07B-4603-8B7D-B79F5963FA44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CEED5534-C07B-4603-8B7D-B79F5963FA44}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
