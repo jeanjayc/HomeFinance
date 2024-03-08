@@ -1,16 +1,18 @@
 ﻿using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
+using HomeFinance.Infra.Dao.Interfaces.Financas;
 using HomeFinance.Infra.Interfaces;
-using Microsoft.VisualBasic;
 
 namespace HomeFinance.Application.Services
 {
     public class FinancesService : IFinancesService
     {
         private readonly IFinanceRepository _financesRepository;
-        public FinancesService(IFinanceRepository financesRepository)
+        private readonly IFinancaDao _financaDao;
+        public FinancesService(IFinanceRepository financesRepository, IFinancaDao financaDao)
         {
             _financesRepository = financesRepository;
+            _financaDao = financaDao;
         }
 
         public async Task AdicionarNovasDividas(Finances finance)
@@ -42,12 +44,14 @@ namespace HomeFinance.Application.Services
                 throw;
             }
         }
-        public async Task<Finances> BuscarFinancaPorId(Guid? id)
+        public async Task<Finances> BuscarFinancaPorId(Guid id)
         {
             try
             {
-                var result = await _financesRepository.ObterFinancaPorId(id);
-                return result;
+                var financa = await _financaDao.ObterPorId(id);
+                return financa;
+                //var result = await _financesRepository.ObterFinancaPorId(id);
+                //return result;
             }
             catch (Exception ex)
             {

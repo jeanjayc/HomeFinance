@@ -1,5 +1,4 @@
 ﻿using HomeFinance.Domain.Models;
-using HomeFinance.Infra.Data;
 
 namespace HomeFinance.Infra.Interfaces
 {

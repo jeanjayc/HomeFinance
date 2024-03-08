@@ -1,4 +1,4 @@
-﻿@model HomeFinance.Domain.Models.Finances
+﻿@model HomeFinance.MVC.ViewModels.FinanceVM
 
 @{
     ViewData["Title"] = "Nova Conta";
@@ -26,16 +26,27 @@
             </div>
 
             <div class="form-group col-md-3">
-                <label asp-for="QtdInstallments" for="QtdInstallments">Parcelas</label>
-                <input asp-for="QtdInstallments" class="form-control" type="number" required />
+                <input type="checkbox" id="hasInstallments" />
+                <label for="hasInstallments">Contem parcelas</label>
             </div>
 
-            <div class="form-group col-md-3">
-                <label asp-for="InstallmentsPaid" for="InstallmentsPaid">Parcelas Pagas</label>
-                <input asp-for="InstallmentsPaid" class="form-control" type="number" required />
+            <div id="qtd-parcelas" class="form-group col-md-3" style="display:none">
+                <label asp-for="QtdInstallments" for="QtdInstallments">Parcelas</label>
+                <input asp-for="QtdInstallments" class="form-control" type="number" />
             </div>
         </div>
 
         <button type="submit" class="btn btn-success mt-4">Registrar Dívida</button>
     </form>
 </div>
+
+<script>
+    document.getElementById('hasInstallments').addEventListener('change', function () {
+        var quantidadeParcelas = document.getElementById('qtd-parcelas');
+        if (this.checked) {
+            quantidadeParcelas.style.display = 'block';
+        } else {
+            quantidadeParcelas.style.display = 'none';
+        }
+    });
+</script>
