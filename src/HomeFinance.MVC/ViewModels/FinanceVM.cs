@@ -20,5 +20,7 @@ namespace HomeFinance.MVC.ViewModels
 
         [Display(Name = "Quantidade de Parcelas")]
         public int? QtdInstallments { get; set; }
+
+        public decimal ValorTotal { get; set; }
     }
 }

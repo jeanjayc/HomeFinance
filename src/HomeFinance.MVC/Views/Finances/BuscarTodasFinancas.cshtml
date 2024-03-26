@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<HomeFinance.MVC.ViewModels.FinanceVM>
 
 @{
-    ViewData["Title"] = "Página Inicial";
+    ViewData["Title"] = "Todas as financas";
 }
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
@@ -16,8 +16,8 @@
 
 <style>
     .highlight-text {
-        color: #ff0000 !important; 
-        font-size: 1.5em !important; 
+        color: #ff0000 !important;
+        font-size: 1.5em !important;
         font-weight: bold !important;
     }
 
@@ -31,17 +31,13 @@
                     <th class="tabela__coluna--p">Descrição</th>
                     <th class="tabela__coluna--p">Vencimento</th>
                     <th class="tabela__coluna--g">Valor R$</th>
-                    <th class="tabela__coluna--m tabela__alinhamento--direita">
-                        <a asp-controller="Finances" asp-action="Create">
-                            <i class="fas fa-plus"></i>
-                        </a>
-                    </th>
+                    
                 </tr>
             </thead>
             <tbody data-tabela>
                 @foreach (var item in Model)
                 {
-                    <tr>
+                    <tr style="color: @(item.Paid ? "#D3D3D3" : "#000000")">
                         <td class="td" data-td>
                             @Html.DisplayFor(modelItem => item.FinanceName)
                         </td>
@@ -49,18 +45,24 @@
                             @Html.DisplayFor(modelItem => item.DueDate)
                         </td>
                         <td class="td" data-td>
-                            @Html.DisplayFor(modelItem => item.Price)
+                            <strong>R$:</strong> @Html.DisplayFor(modelItem => item.Price)
                         </td>
                         <td class="td" data-td>
                             @if (!item.Paid)
                             {
                                 <form asp-action="AlterarValorPago" asp-route-id="@item.FinancesId">
-                                    <button type="submit" class="btn btn-success btn-sm rounded-pill">Paga</button>
+                                    <button type="submit" class="btn btn-success btn-sm rounded-pill">Pagar</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="AlterarValorPago" asp-route-id="@item.FinancesId">
+                                    <button type="submit" class="btn btn-sm rounded-pill" style="background-color: #D3D3D3; color: #fff;">Paga</button>
                                 </form>
                             }
                         </td>
 
-                        <td>
+                        <td class="td" data-td>
                             <ul class="tabela__botoes-controle">
                                 <a asp-action="Details" asp-route-id="@item.FinancesId"><i class="fas fa-info-circle"></i> </a> |
                                 <a asp-action="Edit" asp-route-id="@item.FinancesId"><i class="fas fa-edit"></i> </a> |
@@ -69,19 +71,6 @@
                         </td>
                     </tr>
                 }
-                <tr>
-                    <th class="tabela__coluna--p" style="background-color:#DCDCDC">
-                        <h2 class="highlight-text"><strong>@ViewBag.Total</strong></h2>
-                    </th>
-                    <td style="background-color:#DCDCDC"></td>
-                    <td class="td" data-td style="background-color:#DCDCDC">
-                        <h2 class="highlight-text">@ViewBag.TotalDividas</h2>
-                    </td>
-                    <td class="td" data-td style="background-color:#DCDCDC">
-                        <a href="@Url.Action("BuscarTodasFinancas", "Finances")" style="font-size: 15px; white-space: nowrap;">Ver todas as contas</a>
-                    </td>
-                    <td style="background-color:#DCDCDC"></td>
-                </tr>
 
             </tbody>
         </table>

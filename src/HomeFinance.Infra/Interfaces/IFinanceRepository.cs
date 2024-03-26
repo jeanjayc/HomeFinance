@@ -6,6 +6,7 @@ namespace HomeFinance.Infra.Interfaces
     {
         Task<Finances> AdicionarNovaDivida(Finances finance);
         Task<List<Finances>> ListarTodasDividas();
+        Task<List<Finances>> ListarTodasDividasNaoPagas();
         Task<Finances> ObterFinancaPorId(Guid? id);
         Task<Finances> ObterFinancaPorNome(string name);
         Task<Finances> AtualizarFinanca(Finances finance);

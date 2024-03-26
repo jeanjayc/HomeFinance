@@ -1,6 +1,5 @@
 ﻿using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
-using HomeFinance.Infra.Dao.Interfaces.Financas;
 using HomeFinance.Infra.Interfaces;
 
 namespace HomeFinance.Application.Services
@@ -8,11 +7,9 @@ namespace HomeFinance.Application.Services
     public class FinancesService : IFinancesService
     {
         private readonly IFinanceRepository _financesRepository;
-        private readonly IFinancaDao _financaDao;
-        public FinancesService(IFinanceRepository financesRepository, IFinancaDao financaDao)
+        public FinancesService(IFinanceRepository financesRepository)
         {
             _financesRepository = financesRepository;
-            _financaDao = financaDao;
         }
 
         public async Task AdicionarNovasDividas(Finances finance)
@@ -31,7 +28,7 @@ namespace HomeFinance.Application.Services
             }
 
         }
-        public async Task<List<Finances>> BuscarFinancas()
+        public async Task<List<Finances>> BuscarTodasFinancas()
         {
             try
             {
@@ -44,14 +41,18 @@ namespace HomeFinance.Application.Services
                 throw;
             }
         }
+
+        public async Task<List<Finances>> BuscarTodasFinancasAPagar()
+        {
+            var result = await _financesRepository.ListarTodasDividasNaoPagas();
+             return result;
+        }
         public async Task<Finances> BuscarFinancaPorId(Guid id)
         {
             try
             {
-                var financa = await _financaDao.ObterPorId(id);
-                return financa;
-                //var result = await _financesRepository.ObterFinancaPorId(id);
-                //return result;
+                var result = await _financesRepository.ObterFinancaPorId(id);
+                return result;
             }
             catch (Exception ex)
             {
@@ -84,7 +85,7 @@ namespace HomeFinance.Application.Services
 
         public async Task<string> BuscarVencimentoProximo()
         {
-            var todasFinancas = await BuscarFinancas();
+            var todasFinancas = await BuscarTodasFinancas();
             var dataHJ = DateTime.Now.Day;
 
             var proxVencimento = 0;
@@ -106,7 +107,7 @@ namespace HomeFinance.Application.Services
 
         public async Task<decimal> CalcularGastos(decimal renda)
         {
-            var financas = await BuscarFinancas();
+            var financas = await BuscarTodasFinancas();
             var somaGastos = 0m;
 
             foreach(var item in financas)
@@ -119,9 +120,26 @@ namespace HomeFinance.Application.Services
             return valorAbatidoNaRenda;
         }
 
+
+
+        public async Task<decimal> AlterarValorPago(Guid id)
+        {
+            var finances = await BuscarFinancaPorId(id);
+
+            finances.Paid = true;
+
+            AtualizarDadosFinancas(finances);
+
+            var totalDividas = await SomarTotalFinancas();
+
+            var valorAtualizado = totalDividas - finances.Price;
+
+            return valorAtualizado;
+        }
+
         public async Task<decimal> SomarTotalFinancas()
         {
-            var todasFinancas = await BuscarFinancas();
+            var todasFinancas = await BuscarFinancasNaoPagas();
 
             var result = 0m;
 
@@ -133,11 +151,18 @@ namespace HomeFinance.Application.Services
             return result;
         }
 
-        public async Task<decimal> AlterarValorPago(decimal value)
+        private async Task<List<Finances>> BuscarFinancasNaoPagas()
         {
-            var totalDividas = await SomarTotalFinancas();
-            var valorAtualizado = totalDividas - value;
-            return valorAtualizado;
+            try
+            {
+                var result = await _financesRepository.ListarTodasDividasNaoPagas();
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
     }
 }
