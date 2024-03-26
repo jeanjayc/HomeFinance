@@ -19,7 +19,7 @@ namespace HomeFinance.Api.Controllers
         {
             try
             {
-                var financas = await _service.BuscarFinancas();
+                var financas = await _service.BuscarTodasFinancas();
                 return Ok(financas);
             }
             catch (Exception ex)

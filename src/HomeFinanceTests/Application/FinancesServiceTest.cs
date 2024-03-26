@@ -51,7 +51,7 @@ namespace HomeFinanceTests.Application
 
             //Act
             var service = new FinancesService(moqObj.Object);
-            var result = await service.BuscarFinancas();
+            var result = await service.BuscarTodasFinancas();
 
             //Assert
             Assert.IsType<List<Finances>>(result);
