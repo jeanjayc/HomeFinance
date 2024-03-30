@@ -47,6 +47,11 @@ namespace HomeFinance.Infra.Repositories
             return await _context.Finances.ToListAsync();
         }
 
+        public async Task<List<Finances>> ListarTodasDividasNaoPagas()
+        {
+            return await _context.Finances.Where(f => f.Paid == false).ToListAsync();
+        }
+
         public async Task<Finances> AtualizarFinanca(Finances finance)
         {
             _context.Finances.Update(finance);

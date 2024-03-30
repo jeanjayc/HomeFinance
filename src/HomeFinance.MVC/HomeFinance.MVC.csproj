@@ -26,4 +26,8 @@
     <ProjectReference Include="..\HomeFinance.Models\HomeFinance.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\assets\img\" />
+  </ItemGroup>
+
 </Project>

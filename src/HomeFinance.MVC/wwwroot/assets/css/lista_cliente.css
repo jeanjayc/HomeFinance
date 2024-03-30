@@ -1,0 +1,21 @@
+.finances-container {
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+@media(min-width: 1200px) {
+	.clientes-container {
+		padding-left: calc((100vw - 900px)/2);
+		padding-right: calc((100vw - 900px)/2);
+	}
+}
+
+tfoot {
+	background-color: #c2dcff;
+}
+
+.valor-total-celula {
+    text-align: right; 
+    font-weight: bold; 
+    color: rgb(179, 5, 54); 
+}

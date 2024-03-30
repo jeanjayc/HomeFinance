@@ -10,7 +10,6 @@ namespace HomeFinance.Domain.Models
         public DateTime DueDate { get; set; }
         public decimal Price { get; set; }
         public bool Paid { get; set; }
-        public int? InstallmentsPaid { get; set; }
         public int? QtdInstallments { get; set; }
     }
 }

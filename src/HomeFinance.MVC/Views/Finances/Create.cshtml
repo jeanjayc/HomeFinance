@@ -1,41 +1,57 @@
-﻿@model HomeFinance.Domain.Models.Finances
+﻿@model HomeFinance.MVC.ViewModels.FinanceVM
 
 @{
-    ViewData["Title"] = "Nova Conta";
-}
+    ViewData["Title"] = "Minhas finanças | Cadastro de dívidas";
+} 
 
-<div class="container">
-    <h2 class="mt-4">Criar Nova Conta</h2>
-    <form asp-action="Create" asp-controller="Finances" method="post">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/base.css">
+<link rel="stylesheet" href="../assets/css/componentes/cabecalho.css">
+<link rel="stylesheet" href="../assets/css/componentes/cartao.css">
+<link rel="stylesheet" href="../assets/css/cadastra_cliente.css">
+<link rel="stylesheet" href="../assets/css/componentes/inputs.css">
+<link rel="stylesheet" href="../assets/css/componentes/botao.css">
 
-        <h3 class="mt-4">Parcelas</h3>
 
-        <div class="form-row">
-            <div class="form-group col-md-3">
-                <label asp-for="FinanceName">Nome da Conta</label>
-                <input asp-for="FinanceName" class="form-control" id="FinanceName" name="FinanceName" type="text" required />
-            </div>
-            <div class="form-group col-md-3">
-                <label asp-for="DueDate" for="DueDate">Vencimento</label>
-                <input asp-for="DueDate" class="form-control" type="date" required />
-            </div>
+<body>
+    
+    <main class="container flex flex--centro flex--coluna">
+        <section class="cartao cadastro">
+            <h1 class="cartao__titulo">Registre uma nova conta</h1>
+            <form class="flex flex--coluna" data-form asp-action="Create" asp-controller="Finances">
+                <div class="input-container">
+                    <input name="FinanceName" id="FinanceName" class="input" type="text" placeholder="descricao" required
+                           data-descricao>
+                    <label class="input-label" for="FinanceName">Descrição</label>
+                    <span class="input-mensagem-erro">Esse campo não pode estar vazio</span>
+                </div>
+                <div class="input-container">
+                    <input name="DueDate" id="DueDate" class="input" type="datetime" placeholder="dueDate" required
+                           data-dueDate>
+                    <label class="input-label" for="DueDate">Data de vencimento</label>
+                    <span class="input-mensagem-erro">Esse campo não pode estar vazio</span>
+                </div>
+                <div class="input-container">
+                    <input name="Price" id="Price" class="input" type="text" placeholder="valor" required data-valor>
+                    <label class="input-label" for="Price">Valor R$</label>
+                    <span class="input-mensagem-erro">Esse campo não pode estar vazio</span>
+                </div>
+                <button type="submit" class="botao">
+                    Cadastrar
+                </button>
+            </form>
+        </section>
+    </main>
+</body>
 
-            <div class="form-group col-md-3">
-                <label asp-for="Price" for="Price">Valor (R$)</label>
-                <input asp-for="Price" class="form-control" type="number" step="0.01" required />
-            </div>
-
-            <div class="form-group col-md-3">
-                <label asp-for="QtdInstallments" for="QtdInstallments">Parcelas</label>
-                <input asp-for="QtdInstallments" class="form-control" type="number" required />
-            </div>
-
-            <div class="form-group col-md-3">
-                <label asp-for="InstallmentsPaid" for="InstallmentsPaid">Parcelas Pagas</label>
-                <input asp-for="InstallmentsPaid" class="form-control" type="number" required />
-            </div>
-        </div>
-
-        <button type="submit" class="btn btn-success mt-4">Registrar Dívida</button>
-    </form>
-</div>
+<script>
+    document.getElementById('hasInstallments').addEventListener('change', function () {
+        var quantidadeParcelas = document.getElementById('qtd-parcelas');
+        if (this.checked) {
+            quantidadeParcelas.style.display = 'block';
+        } else {
+            quantidadeParcelas.style.display = 'none';
+        }
+    });
+</script>

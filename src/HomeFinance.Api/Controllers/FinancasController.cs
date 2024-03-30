@@ -19,7 +19,7 @@ namespace HomeFinance.Api.Controllers
         {
             try
             {
-                var financas = await _service.BuscarFinancas();
+                var financas = await _service.BuscarTodasFinancas();
                 return Ok(financas);
             }
             catch (Exception ex)
@@ -29,7 +29,7 @@ namespace HomeFinance.Api.Controllers
             }
         }
         [HttpPost]
-        public async Task<IActionResult> BuscarFinancaPorId(Guid? id)
+        public async Task<IActionResult> BuscarFinancaPorId(Guid id)
         {
             var financa = _service.BuscarFinancaPorId(id);
             return Ok(financa);

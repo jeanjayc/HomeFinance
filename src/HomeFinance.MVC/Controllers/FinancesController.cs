@@ -1,5 +1,6 @@
 ﻿using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
+using HomeFinance.MVC.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,29 +15,73 @@ namespace HomeFinance.MVC.Controllers
             _service = service;
             _logger = logger;
         }
+
         public async Task<IActionResult> Index()
         {
             try
             {
-                var result = await _service.BuscarFinancas();
+                var listFinances = await _service.BuscarTodasFinancasAPagar();
 
-                if (result.Count == 0 || result is null) return View("Error");
+                if (!listFinances.Any() || listFinances is null)
+                {
+                    return View("Error");
+                }
+
+                var viewModel = listFinances.Select(f => new FinanceVM
+                {
+                    FinancesId = f.FinancesId,
+                    FinanceName = f.FinanceName,
+                    DueDate = f.DueDate.ToString("dd/MM/yyyy"),
+                    Price = f.Price,
+                    Paid = f.Paid
+                });
 
                 var totalDividas = await _service.SomarTotalFinancas();
 
                 ViewBag.Total = "Total: ";
                 ViewBag.TotalDividas = totalDividas;
 
-                return View(result);
+                return View(viewModel);
             }
             catch (Exception ex)
             {
                 _logger.LogError("Problema ao carregar a INDEX", "Erro: " + ex.Message);
                 return StatusCode(500, "Erro Interno");
             }
-            
+
         }
-        public async Task<IActionResult> Details(Guid? id)
+
+        public async Task<IActionResult> BuscarTodasFinancas()
+        {
+            try
+            {
+                var listFinances = await _service.BuscarTodasFinancas();
+
+                if (!listFinances.Any() || listFinances is null)
+                {
+                    return View("Error");
+                }
+
+                var viewModel = listFinances.Select(f => new FinanceVM
+                {
+                    FinancesId = f.FinancesId,
+                    FinanceName = f.FinanceName,
+                    DueDate = f.DueDate.ToString("dd/MM/yyyy"),
+                    Price = f.Price,
+                    Paid = f.Paid
+                });
+
+
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Problema ao carregar a lista de todas as financas", "Erro: " + ex.Message);
+                return StatusCode(500, "Erro Interno");
+            }
+        }
+
+        public async Task<IActionResult> Details(Guid id)
         {
             if (id == null || _service.BuscarFinancaPorId(id) == null)
             {
@@ -55,16 +100,36 @@ namespace HomeFinance.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Finances finances)
+        public async Task<IActionResult> Create(FinanceVM finances)
         {
-            if (ModelState.IsValid)
+            try
             {
-                await _service.AdicionarNovasDividas(finances);
-                return RedirectToAction(nameof(Index));
+                if (ModelState.IsValid)
+                {
+                    var newFinances = new Finances
+                    {
+                        FinancesId = Guid.NewGuid(),
+                        FinanceName = finances.FinanceName,
+                        DueDate = Convert.ToDateTime(finances.DueDate),
+                        Price = finances.Price,
+                        Paid = finances.Paid
+                    };
+
+                    await _service.AdicionarNovasDividas(newFinances);
+
+                    return RedirectToAction(nameof(Index));
+                }
+
+                return View(finances);
             }
-            return View(finances);
+            catch (Exception ex)
+            {
+                _logger.LogError("Problema ao criar nova divida", "Erro: " + ex.Message);
+                throw;
+            }
+
         }
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
             if (id == null || _service.BuscarFinancaPorId(id) == null)
             {
@@ -102,7 +167,7 @@ namespace HomeFinance.MVC.Controllers
                     }
                     else
                     {
-                        _logger.LogError("Método "+nameof(Edit),$"Erro: {ex.Message}");
+                        _logger.LogError("Método " + nameof(Edit), $"Erro: {ex.Message}");
                     }
                 }
                 return RedirectToAction(nameof(Index));
@@ -110,7 +175,7 @@ namespace HomeFinance.MVC.Controllers
             return View(finances);
         }
 
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             if (id == null || _service.BuscarFinancaPorId(id) == null)
             {
@@ -126,10 +191,11 @@ namespace HomeFinance.MVC.Controllers
             return View(finances);
         }
 
-        public async Task<IActionResult> AlterarValorPago(AlterarValorPago data)
+        public async Task<IActionResult> AlterarValorPago(Guid id)
         {
-           
-            return Ok();
+            var financaAtualizada = await _service.AlterarValorPago(id);
+
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost, ActionName("Delete")]
