@@ -1,11 +1,13 @@
 ﻿using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
 using HomeFinance.MVC.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace HomeFinance.MVC.Controllers
 {
+    [Authorize]
     public class FinancesController : Controller
     {
         private readonly IFinancesService _service;
@@ -129,6 +131,7 @@ namespace HomeFinance.MVC.Controllers
             }
 
         }
+
         public async Task<IActionResult> Edit(Guid id)
         {
             if (id == null || _service.BuscarFinancaPorId(id) == null)
