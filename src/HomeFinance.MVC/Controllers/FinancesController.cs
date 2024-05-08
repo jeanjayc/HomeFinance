@@ -151,18 +151,14 @@ namespace HomeFinance.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, Finances finances)
         {
-            if (id != finances.FinancesId)
-            {
-                return NotFound();
-            }
-
+            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _service.AtualizarDadosFinancas(finances);
+                    await _service.AtualizarDadosFinancas(id, finances);
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch (Exception ex)
                 {
                     if (!FinancesExists(finances.FinancesId))
                     {

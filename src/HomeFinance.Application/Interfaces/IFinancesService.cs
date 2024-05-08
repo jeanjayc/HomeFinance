@@ -6,7 +6,7 @@ namespace HomeFinance.Application.Interfaces
     {
         Task AdicionarNovasDividas(Finances finance);
 
-        Task<Finances> AtualizarDadosFinancas(Finances finances);
+        Task<Finances> AtualizarDadosFinancas(Guid id,Finances finances);
 
         Task<Finances> BuscarFinancaPorId(Guid id);
 
