@@ -3,7 +3,6 @@ using HomeFinance.Domain.Models;
 using HomeFinance.MVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HomeFinance.MVC.Controllers
 {
@@ -134,7 +133,7 @@ namespace HomeFinance.MVC.Controllers
 
         public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == null || _service.BuscarFinancaPorId(id) == null)
+            if (id == null || await _service.BuscarFinancaPorId(id) == null)
             {
                 return NotFound();
             }
@@ -160,14 +159,8 @@ namespace HomeFinance.MVC.Controllers
                 }
                 catch (Exception ex)
                 {
-                    if (!FinancesExists(finances.FinancesId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        _logger.LogError("Método " + nameof(Edit), $"Erro: {ex.Message}");
-                    }
+                    _logger.LogError("Método " + nameof(Edit), $"Erro: {ex.Message}");
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }

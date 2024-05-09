@@ -136,9 +136,12 @@ namespace HomeFinance.Application.Services
         {
             var finances = await BuscarFinancaPorId(id);
 
-            finances.Paid = true;
+            if(finances is null)
+                throw new ArgumentNullException("Finança não encontrada");
 
-            AtualizarDadosFinancas(id,finances);
+            finances.Paid = finances.Paid is true ? finances.Paid = false : finances.Paid = true;
+
+            await _financesRepository.AtualizarFinanca(finances);
 
             var totalDividas = await SomarTotalFinancas();
 

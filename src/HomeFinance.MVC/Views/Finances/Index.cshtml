@@ -52,10 +52,16 @@
                             @Html.DisplayFor(modelItem => item.Price)
                         </td>
                         <td class="td" data-td>
-                            @if (!item.Paid)
+                            @if (item.Paid)
                             {
                                 <form asp-action="AlterarValorPago" asp-route-id="@item.FinancesId">
                                     <button type="submit" class="btn btn-success btn-sm rounded-pill">Paga</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form asp-action="AlterarValorPago" asp-route-id="@item.FinancesId">
+                                    <button type="submit" class="btn btn-danger btn-sm rounded-pill">Pagar</button>
                                 </form>
                             }
                         </td>
@@ -77,9 +83,7 @@
                     <td class="td" data-td style="background-color:#DCDCDC">
                         <h2 class="highlight-text">@ViewBag.TotalDividas</h2>
                     </td>
-                    <td class="td" data-td style="background-color:#DCDCDC">
-                        <a href="@Url.Action("BuscarTodasFinancas", "Finances")" style="font-size: 15px; white-space: nowrap;">Ver todas as contas</a>
-                    </td>
+                    <td class="td" data-td style="background-color:#DCDCDC"></td>
                     <td style="background-color:#DCDCDC"></td>
                 </tr>
 
