@@ -37,10 +37,8 @@ namespace HomeFinance.MVC.Controllers
                     Paid = f.Paid
                 });
 
-                var totalDividas = await _service.SomarTotalFinancas();
-
                 ViewBag.Total = "Total: ";
-                ViewBag.TotalDividas = totalDividas;
+                ViewBag.TotalDividas = await _service.SomarTotalFinancas();
 
                 return View(viewModel);
             }
