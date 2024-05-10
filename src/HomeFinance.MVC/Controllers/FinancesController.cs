@@ -1,11 +1,12 @@
 ﻿using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
 using HomeFinance.MVC.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace HomeFinance.MVC.Controllers
 {
+    [Authorize]
     public class FinancesController : Controller
     {
         private readonly IFinancesService _service;
@@ -36,10 +37,8 @@ namespace HomeFinance.MVC.Controllers
                     Paid = f.Paid
                 });
 
-                var totalDividas = await _service.SomarTotalFinancas();
-
                 ViewBag.Total = "Total: ";
-                ViewBag.TotalDividas = totalDividas;
+                ViewBag.TotalDividas = await _service.SomarTotalFinancas();
 
                 return View(viewModel);
             }
@@ -129,9 +128,10 @@ namespace HomeFinance.MVC.Controllers
             }
 
         }
+
         public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == null || _service.BuscarFinancaPorId(id) == null)
+            if (id == null || await _service.BuscarFinancaPorId(id) == null)
             {
                 return NotFound();
             }
@@ -148,27 +148,17 @@ namespace HomeFinance.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, Finances finances)
         {
-            if (id != finances.FinancesId)
-            {
-                return NotFound();
-            }
-
+            
             if (ModelState.IsValid)
             {
                 try
                 {
-                    await _service.AtualizarDadosFinancas(finances);
+                    await _service.AtualizarDadosFinancas(id, finances);
                 }
-                catch (DbUpdateConcurrencyException ex)
+                catch (Exception ex)
                 {
-                    if (!FinancesExists(finances.FinancesId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        _logger.LogError("Método " + nameof(Edit), $"Erro: {ex.Message}");
-                    }
+                    _logger.LogError("Método " + nameof(Edit), $"Erro: {ex.Message}");
+                    throw;
                 }
                 return RedirectToAction(nameof(Index));
             }

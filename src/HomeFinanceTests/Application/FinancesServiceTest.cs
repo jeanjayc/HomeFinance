@@ -174,7 +174,7 @@ namespace HomeFinanceTests.Application
 
             //Act
             var service = new FinancesService(moqObj.Object);
-            var result = service.AtualizarDadosFinancas(dividaExistente);
+            var result = service.AtualizarDadosFinancas(dividaExistente.FinancesId,dividaExistente);
 
             //Assert
             Assert.NotNull(result);

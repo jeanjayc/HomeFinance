@@ -9,6 +9,9 @@ namespace HomeFinance.Infra.DTOs.Request
         public string Email { get; set; }
 
         [Required(ErrorMessage = "O campo {0} é obrigatório.")]
+        [DataType(DataType.Password)]
         public string Senha { get; set; }
+
+        public string ReturnUrl { get; set; }
     }
 }

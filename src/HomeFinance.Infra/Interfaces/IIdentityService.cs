@@ -7,5 +7,6 @@ namespace HomeFinance.Infra.Interfaces
     {
         Task<UsuarioCadastroResponse> CadastrarUsuario(UsuarioCadastroRequest usuarioCadastro);
         Task<UsuarioLoginResponse> LoginUsuario(UsuarioLoginRequest usuarioLogin);
+        Task LogOut();
     }
 }

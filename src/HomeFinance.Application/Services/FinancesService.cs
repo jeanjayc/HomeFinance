@@ -51,8 +51,7 @@ namespace HomeFinance.Application.Services
         {
             try
             {
-                var result = await _financesRepository.ObterFinancaPorId(id);
-                return result;
+                return await _financesRepository.ObterFinancaPorId(id);
             }
             catch (Exception ex)
             {
@@ -73,9 +72,20 @@ namespace HomeFinance.Application.Services
                 throw;
             }
         }
-        public async Task<Finances> AtualizarDadosFinancas(Finances finances)
+        public async Task<Finances> AtualizarDadosFinancas(Guid id, Finances financaVM)
         {
-            var result = await _financesRepository.AtualizarFinanca(finances);
+            var financa = await BuscarFinancaPorId(id);
+
+            if(financa is null)
+            {
+                throw new ArgumentNullException("Finança não encontrada");
+            }
+
+            financa.FinanceName = financaVM.FinanceName;
+            financa.DueDate = financaVM.DueDate.ToUniversalTime();
+            financa.Price = financaVM.Price;
+
+            var result = await _financesRepository.AtualizarFinanca(financa);
             return result;
         }
         public async Task<Finances> DeletarFinancas(Guid id)
@@ -126,9 +136,12 @@ namespace HomeFinance.Application.Services
         {
             var finances = await BuscarFinancaPorId(id);
 
-            finances.Paid = true;
+            if(finances is null)
+                throw new ArgumentNullException("Finança não encontrada");
 
-            AtualizarDadosFinancas(finances);
+            finances.Paid = finances.Paid is true ? finances.Paid = false : finances.Paid = true;
+
+            await _financesRepository.AtualizarFinanca(finances);
 
             var totalDividas = await SomarTotalFinancas();
 

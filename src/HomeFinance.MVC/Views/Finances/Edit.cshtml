@@ -1,35 +1,44 @@
 ﻿@model HomeFinance.Domain.Models.Finances
 
 @{
-    ViewData["Title"] = "Edit";
-}
+    ViewData["Title"] = "Minhas finanças | Edição de dívida";
+} 
 
-<h1>Edit</h1>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/base/base.css">
+<link rel="stylesheet" href="../assets/css/componentes/cabecalho.css">
+<link rel="stylesheet" href="../assets/css/componentes/cartao.css">
+<link rel="stylesheet" href="../assets/css/cadastra_cliente.css">
+<link rel="stylesheet" href="../assets/css/componentes/inputs.css">
+<link rel="stylesheet" href="../assets/css/componentes/botao.css">
 
-<h4>Finances</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="FinancesId" />
-            <div class="form-group">
-                <label asp-for="FinanceName" class="control-label"></label>
-                <input asp-for="FinanceName" class="form-control" />
-                <span asp-validation-for="FinanceName" class="text-danger"></span>
-            </div>
-            
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+<body>
+    
+    <main class="container flex flex--centro flex--coluna">
+        <section class="cartao cadastro">
+            <h1 class="cartao__titulo">Registre uma nova conta</h1>
+            <form class="flex flex--coluna" data-form asp-action="Edit" asp-controller="Finances">
+                <div class="input-container">
+                    @Html.LabelFor(model => model.FinanceName, new { @class = "form-control-label" })<br />
+                    @Html.TextBoxFor(model => model.FinanceName, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.FinanceName, "", new { @class = "invalid-feedback" })
+                </div>
+                <div class="input-container">
+                    @Html.LabelFor(model => model.DueDate, new { @class = "form-control-label" })<br />
+                    @Html.TextBoxFor(model => model.DueDate, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.DueDate, "", new { @class = "invalid-feedback" })
+                </div>
+                <div class="input-container">
+                    @Html.LabelFor(model => model.Price, new { @class = "form-control-label" })<br />
+                    @Html.TextBoxFor(model => model.Price, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Price, "", new { @class = "invalid-feedback" })
+                </div>
+                <button type="submit" class="botao">
+                    Editar
+                </button>
+            </form>
+        </section>
+    </main>
+</body>

@@ -25,12 +25,14 @@ namespace HomeFinance.Infra.Identity.Service
             };
 
             var result = await _userManager.CreateAsync(identityUser, usuarioCadastro.Senha);
+
             if(result.Succeeded)
             {
                 await _userManager.SetLockoutEnabledAsync(identityUser, false);
             }
 
             var usuarioCadastroResponse = new UsuarioCadastroResponse(result.Succeeded);
+
             if(!result.Succeeded && result.Errors.Any())
             {
                 usuarioCadastroResponse.AdicionarErro(result.Errors.Select(e => e.Description));
@@ -41,31 +43,46 @@ namespace HomeFinance.Infra.Identity.Service
 
         public async Task<UsuarioLoginResponse> LoginUsuario(UsuarioLoginRequest usuarioLogin)
         {
-            var result = await _signInManager.PasswordSignInAsync(usuarioLogin.Email, usuarioLogin.Senha, false, true);
+            var user = await _userManager.FindByNameAsync(usuarioLogin.Email);
+            var usuarioLoginResponse = new UsuarioLoginResponse(false);
 
-            var usuarioLoginResponse = new UsuarioLoginResponse(result.Succeeded);
-
-            if (!result.Succeeded)
+            if (user != null)
             {
-                if(result.IsLockedOut)
+                var result = await _signInManager.PasswordSignInAsync(usuarioLogin.Email, usuarioLogin.Senha, false, true);
+
+                usuarioLoginResponse = new UsuarioLoginResponse(result.Succeeded);
+
+                if (!result.Succeeded)
                 {
-                    usuarioLoginResponse.Erros.Add("Usuário bloqueado por tentativas inválidas");
+                    if (result.IsLockedOut)
+                    {
+                        usuarioLoginResponse.Erros.Add("Usuário bloqueado por tentativas inválidas");
+                    }
+                    else if (result.IsNotAllowed)
+                    {
+                        usuarioLoginResponse.Erros.Add("Usuário não está autorizado a acessar o sistema");
+                    }
+                    else if (result.RequiresTwoFactor)
+                    {
+                        usuarioLoginResponse.Erros.Add("Usuário ou senha inválidos");
+                    }
+                    else
+                    {
+                        usuarioLoginResponse.Erros.Add("Usuário ou senha inválidos");
+                    }
                 }
-                else if(result.IsNotAllowed)
-                {
-                    usuarioLoginResponse.Erros.Add("Usuário não está autorizado a acessar o sistema");
-                }
-                else if(result.RequiresTwoFactor)
-                {
-                    usuarioLoginResponse.Erros.Add("Usuário ou senha inválidos");
-                }
-                else
-                {
-                    usuarioLoginResponse.Erros.Add("Usuário ou senha inválidos");
-                }
+            }
+            else
+            {
+                usuarioLoginResponse.Erros.Add("Usuário não encontrado");
             }
 
             return usuarioLoginResponse;
+        }
+
+        public async Task LogOut()
+        {
+            await _signInManager.SignOutAsync();
         }
     }
 }
