@@ -21,7 +21,7 @@ namespace HomeFinance.Infra.Repositories
             try
             {
                 finance.DueDate = finance.DueDate.ToUniversalTime();
-                _context.AddAsync(finance);
+                await _context.AddAsync(finance);
                 await _context.SaveChangesAsync();
                 return finance;
             }
