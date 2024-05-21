@@ -2,7 +2,8 @@
 
 @{
     ViewData["Title"] = "Minhas finanças | Edição de dívida";
-} 
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
@@ -15,14 +16,14 @@
 
 
 <body>
-    
+
     <main class="container flex flex--centro flex--coluna">
         <section class="cartao cadastro">
-            <h1 class="cartao__titulo">Registre uma nova conta</h1>
+            <h1 class="cartao__titulo">Editar</h1>
             <form class="flex flex--coluna" data-form asp-action="Edit" asp-controller="Finances">
                 <div class="input-container">
                     @Html.LabelFor(model => model.FinanceName, new { @class = "form-control-label" })<br />
-                    @Html.TextBoxFor(model => model.FinanceName, new { @class = "form-control" })
+                    @Html.TextBoxFor(model => model.FinanceName, new { @id = "FinanceName", @class = "input" })
                     @Html.ValidationMessageFor(model => model.FinanceName, "", new { @class = "invalid-feedback" })
                 </div>
                 <div class="input-container">

@@ -165,22 +165,6 @@ namespace HomeFinance.MVC.Controllers
             return View(finances);
         }
 
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            if (id == null || _service.BuscarFinancaPorId(id) == null)
-            {
-                return NotFound();
-            }
-
-            var finances = await _service.BuscarFinancaPorId(id);
-            if (finances == null)
-            {
-                return NotFound();
-            }
-
-            return View(finances);
-        }
-
         public async Task<IActionResult> AlterarValorPago(Guid id)
         {
             var financaAtualizada = await _service.AlterarValorPago(id);
@@ -188,13 +172,11 @@ namespace HomeFinance.MVC.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            if (_service.BuscarFinancaPorId(id) == null)
+            if (id == Guid.Empty)
             {
-                return Problem("Entity set 'AppDbContext.Finances'  is null.");
+                return NotFound();
             }
             var finances = await _service.BuscarFinancaPorId(id);
             if (finances != null)
