@@ -30,11 +30,11 @@ namespace HomeFinance.MVC.Controllers
 
                 var viewModel = listFinances.Select(f => new FinanceVM
                 {
-                    FinancesId = f.FinancesId,
-                    FinanceName = f.FinanceName,
-                    DueDate = f.DueDate.ToString("dd/MM/yyyy"),
-                    Price = f.Price,
-                    Paid = f.Paid
+                    FinancesId = f.FinancaId,
+                    FinanceName = f.Descricao,
+                    DueDate = f.DataVencimento.ToString("dd/MM/yyyy"),
+                    Price = f.Valor,
+                    Paid = f.Pago
                 });
 
                 ViewBag.Total = "Total: ";
@@ -50,6 +50,20 @@ namespace HomeFinance.MVC.Controllers
 
         }
 
+        public async Task<IActionResult> BuscarFinancaPorDescricao(string descricao)
+        {
+            try
+            {
+                var result = await _service.BuscarFinancaPorNome(descricao);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<IActionResult> BuscarTodasFinancas()
         {
             try
@@ -63,11 +77,11 @@ namespace HomeFinance.MVC.Controllers
 
                 var viewModel = listFinances.Select(f => new FinanceVM
                 {
-                    FinancesId = f.FinancesId,
-                    FinanceName = f.FinanceName,
-                    DueDate = f.DueDate.ToString("dd/MM/yyyy"),
-                    Price = f.Price,
-                    Paid = f.Paid
+                    FinancesId = f.FinancaId,
+                    FinanceName = f.Descricao,
+                    DueDate = f.DataVencimento.ToString("dd/MM/yyyy"),
+                    Price = f.Valor,
+                    Paid = f.Pago
                 });
 
 
@@ -107,11 +121,11 @@ namespace HomeFinance.MVC.Controllers
                 {
                     var newFinances = new Finances
                     {
-                        FinancesId = Guid.NewGuid(),
-                        FinanceName = finances.FinanceName,
-                        DueDate = Convert.ToDateTime(finances.DueDate),
-                        Price = finances.Price,
-                        Paid = finances.Paid
+                        FinancaId = Guid.NewGuid(),
+                        Descricao = finances.FinanceName,
+                        DataVencimento = Convert.ToDateTime(finances.DueDate),
+                        Valor = finances.Price,
+                        Pago = finances.Paid
                     };
 
                     await _service.AdicionarNovasDividas(newFinances);

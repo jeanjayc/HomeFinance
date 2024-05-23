@@ -1,15 +1,18 @@
 ﻿using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
 using HomeFinance.Infra.Interfaces;
+using HomeFinance.Infra.Interfaces.DAO;
 
 namespace HomeFinance.Application.Services
 {
     public class FinancesService : IFinancesService
     {
         private readonly IFinanceRepository _financesRepository;
-        public FinancesService(IFinanceRepository financesRepository)
+        private readonly IFinancaDAO _financaDao;
+        public FinancesService(IFinanceRepository financesRepository, IFinancaDAO financaDAO)
         {
             _financesRepository = financesRepository;
+            _financaDao = financaDAO;
         }
 
         public async Task AdicionarNovasDividas(Finances finance)
@@ -18,7 +21,7 @@ namespace HomeFinance.Application.Services
             {
                 if (finance is null) return;
 
-                finance.FinancesId = Guid.NewGuid();
+                finance.FinancaId = Guid.NewGuid();
                 await _financesRepository.AdicionarNovaDivida(finance);
             }
             catch (Exception ex)
@@ -63,8 +66,18 @@ namespace HomeFinance.Application.Services
         {
             try
             {
-                var result = await _financesRepository.ObterFinancaPorNome(name);
-                return result;
+                var result = await _financaDao.ObterFinancaPorDescricao(name);
+                var financa = new Finances
+                {
+                    FinancaId = result.IdFinanca,
+                    DataVencimento = result.DataVencimento,
+                    Descricao = result.DescricaoFinanca,
+                    Pago = result.Pago,
+                    Valor = result.Valor,
+                    QtdParcelas = result.QtdParcelas
+                };
+
+                return financa;
             }
             catch (Exception)
             {
@@ -81,9 +94,9 @@ namespace HomeFinance.Application.Services
                 throw new ArgumentNullException("Finança não encontrada");
             }
 
-            financa.FinanceName = financaVM.FinanceName;
-            financa.DueDate = financaVM.DueDate.ToUniversalTime();
-            financa.Price = financaVM.Price;
+            financa.Descricao = financaVM.Descricao;
+            financa.DataVencimento = financaVM.DataVencimento.ToUniversalTime();
+            financa.Valor = financaVM.Valor;
 
             var result = await _financesRepository.AtualizarFinanca(financa);
             return result;
@@ -139,13 +152,13 @@ namespace HomeFinance.Application.Services
             if(finances is null)
                 throw new ArgumentNullException("Finança não encontrada");
 
-            finances.Paid = finances.Paid is true ? finances.Paid = false : finances.Paid = true;
+            finances.Pago = finances.Pago is true ? finances.Pago = false : finances.Pago = true;
 
             await _financesRepository.AtualizarFinanca(finances);
 
             var totalDividas = await SomarTotalFinancas();
 
-            var valorAtualizado = totalDividas - finances.Price;
+            var valorAtualizado = totalDividas - finances.Valor;
 
             return valorAtualizado;
         }
@@ -158,7 +171,7 @@ namespace HomeFinance.Application.Services
 
             foreach(var finance in todasFinancas)
             {
-                result += finance.Price;
+                result += finance.Valor;
             }
 
             return result;

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeFinance.Infra.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240304235601_ajuste_parcelas_notNull")]
-    partial class ajusteparcelasnotNull
+    [Migration("20240523183541_RenomearTabelaEColunas")]
+    partial class RenomearTabelaEColunas
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,34 +27,36 @@ namespace HomeFinance.Infra.Migrations
 
             modelBuilder.Entity("HomeFinance.Domain.Models.Finances", b =>
                 {
-                    b.Property<Guid>("FinancesId")
+                    b.Property<Guid>("FinancaId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
-                        .HasColumnName("id_finances");
+                        .HasColumnName("idfinanca");
 
-                    b.Property<DateTime>("DueDate")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<DateTime>("DataVencimento")
+                        .HasColumnType("date")
+                        .HasColumnName("data_vencimento");
 
-                    b.Property<string>("FinanceName")
+                    b.Property<string>("Descricao")
                         .IsRequired()
                         .HasColumnType("VARCHAR(70)")
-                        .HasColumnName("finances_name");
+                        .HasColumnName("descricao");
 
-                    b.Property<bool>("Paid")
+                    b.Property<bool>("Pago")
                         .HasColumnType("BOOLEAN")
-                        .HasColumnName("paid");
+                        .HasColumnName("pago");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("numeric");
-
-                    b.Property<long?>("QtdInstallments")
+                    b.Property<long?>("QtdParcelas")
                         .HasColumnType("BIGINT")
-                        .HasColumnName("qtd_installments");
+                        .HasColumnName("qtd_parcelas");
 
-                    b.HasKey("FinancesId")
-                        .HasName("id_finances");
+                    b.Property<decimal>("Valor")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("valor");
 
-                    b.ToTable("finances", (string)null);
+                    b.HasKey("FinancaId")
+                        .HasName("idfinanca");
+
+                    b.ToTable("financas", (string)null);
                 });
 #pragma warning restore 612, 618
         }

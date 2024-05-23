@@ -8,13 +8,14 @@ namespace HomeFinance.Infra.EntitiesConfiguration
     {
         public void Configure(EntityTypeBuilder<Finances> builder)
         {
-            builder.ToTable("finances");
+            builder.ToTable("financas");
 
-            builder.HasKey(f => f.FinancesId).HasName("id_finances");
-            builder.Property(f => f.FinanceName).HasColumnType("VARCHAR(70)").HasColumnName("finances_name").IsRequired();
-            builder.Property(f => f.QtdInstallments).HasColumnType("BIGINT").HasColumnName("qtd_installments");
-            builder.Property(f => f.Paid).HasColumnType("BOOLEAN").HasColumnName("paid");
-
+            builder.HasKey(f => f.FinancaId).HasName("idfinanca");
+            builder.Property(f => f.Descricao).HasColumnType("VARCHAR(70)").HasColumnName("descricao").IsRequired();
+            builder.Property(f => f.QtdParcelas).HasColumnType("BIGINT").HasColumnName("qtd_parcelas");
+            builder.Property(f => f.Valor).HasColumnType("decimal(10,2)").HasColumnName("valor").IsRequired();
+            builder.Property(f => f.DataVencimento).HasColumnType("date").HasColumnName("data_vencimento");
+            builder.Property(f => f.Pago).HasColumnType("BOOLEAN").HasColumnName("pago");
         }
     }
 }

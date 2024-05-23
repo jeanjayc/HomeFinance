@@ -4,12 +4,12 @@ namespace HomeFinance.Domain.Models
 {
     public class Finances
     {
-        [Column("id_finances")]
-        public Guid FinancesId { get; set; }
-        public string? FinanceName { get; set; }
-        public DateTime DueDate { get; set; }
-        public decimal Price { get; set; }
-        public bool Paid { get; set; }
-        public int? QtdInstallments { get; set; }
+        [Column("idfinanca")]
+        public Guid FinancaId { get; set; }
+        public string? Descricao { get; set; }
+        public DateTime DataVencimento { get; set; }
+        public decimal Valor { get; set; }
+        public bool Pago { get; set; }
+        public int? QtdParcelas { get; set; }
     }
 }
