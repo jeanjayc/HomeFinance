@@ -1,5 +1,6 @@
 ﻿using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
+using HomeFinance.Infra.DTOs.Response.Financas;
 using HomeFinance.Infra.Interfaces;
 using HomeFinance.Infra.Interfaces.DAO;
 
@@ -45,9 +46,9 @@ namespace HomeFinance.Application.Services
             }
         }
 
-        public async Task<List<Finances>> BuscarTodasFinancasAPagar()
+        public async Task<IEnumerable<FinancaDTO>> BuscarTodasFinancasNaoPagas()
         {
-            var result = await _financesRepository.ListarTodasDividasNaoPagas();
+            var result = await _financaDao.ObterTodasFinancasNaoPagas();
              return result;
         }
         public async Task<Finances> BuscarFinancaPorId(Guid id)
@@ -74,7 +75,7 @@ namespace HomeFinance.Application.Services
                     Descricao = result.DescricaoFinanca,
                     Pago = result.Pago,
                     Valor = result.Valor,
-                    QtdParcelas = result.QtdParcelas
+                    QtdParcelas = Convert.ToInt32(result.QtdParcelas)
                 };
 
                 return financa;

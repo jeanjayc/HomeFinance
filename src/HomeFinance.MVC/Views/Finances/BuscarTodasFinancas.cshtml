@@ -37,26 +37,26 @@
             <tbody data-tabela>
                 @foreach (var item in Model)
                 {
-                    <tr style="color: @(item.Paid ? "#D3D3D3" : "#000000")">
+                    <tr style="color: @(item.Pago ? "#D3D3D3" : "#000000")">
                         <td class="td" data-td>
-                            @Html.DisplayFor(modelItem => item.FinanceName)
+                            @Html.DisplayFor(modelItem => item.Descricao)
                         </td>
                         <td class="td" data-td>
-                            @Html.DisplayFor(modelItem => item.DueDate)
+                            @Html.DisplayFor(modelItem => item.DataVencimento)
                         </td>
                         <td class="td" data-td>
-                            <strong>R$:</strong> @Html.DisplayFor(modelItem => item.Price)
+                            <strong>R$:</strong> @Html.DisplayFor(modelItem => item.Valor)
                         </td>
                         <td class="td" data-td>
-                            @if (!item.Paid)
+                            @if (!item.Pago)
                             {
-                                <form asp-action="AlterarValorPago" asp-route-id="@item.FinancesId">
+                                <form asp-action="AlterarValorPago" asp-route-id="@item.FinancaId">
                                     <button type="submit" class="btn btn-success btn-sm rounded-pill">Pagar</button>
                                 </form>
                             }
                             else
                             {
-                                <form asp-action="AlterarValorPago" asp-route-id="@item.FinancesId">
+                                <form asp-action="AlterarValorPago" asp-route-id="@item.FinancaId">
                                     <button type="submit" class="btn btn-sm rounded-pill" style="background-color: #D3D3D3; color: #fff;">Paga</button>
                                 </form>
                             }
@@ -64,9 +64,9 @@
 
                         <td class="td" data-td>
                             <ul class="tabela__botoes-controle">
-                                <a asp-action="Details" asp-route-id="@item.FinancesId"><i class="fas fa-info-circle"></i> </a> |
-                                <a asp-action="Edit" asp-route-id="@item.FinancesId"><i class="fas fa-edit"></i> </a> |
-                                <a asp-action="Delete" asp-route-id="@item.FinancesId"><i class="fas fa-trash-alt"></i> </a>
+                                <a asp-action="Details" asp-route-id="@item.FinancaId"><i class="fas fa-info-circle"></i> </a> |
+                                <a asp-action="Edit" asp-route-id="@item.FinancaId"><i class="fas fa-edit"></i> </a> |
+                                <a asp-action="Delete" asp-route-id="@item.FinancaId"><i class="fas fa-trash-alt"></i> </a>
                             </ul>
                         </td>
                     </tr>
