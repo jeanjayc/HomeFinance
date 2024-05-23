@@ -1,4 +1,5 @@
 ﻿using HomeFinance.Domain.Models;
+using HomeFinance.Infra.DTOs.Response.Financas;
 
 namespace HomeFinance.Application.Interfaces
 {
@@ -14,7 +15,7 @@ namespace HomeFinance.Application.Interfaces
 
         Task<List<Finances>> BuscarTodasFinancas();
 
-        Task<List<Finances>> BuscarTodasFinancasAPagar();
+        Task<IEnumerable<FinancaDTO>> BuscarTodasFinancasNaoPagas();
 
         Task<string> BuscarVencimentoProximo();
 

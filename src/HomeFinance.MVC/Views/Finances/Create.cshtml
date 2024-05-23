@@ -15,25 +15,23 @@
 
 
 <body>
-    
     <main class="container flex flex--centro flex--coluna">
         <section class="cartao cadastro">
             <h1 class="cartao__titulo">Registre uma nova conta</h1>
             <form class="flex flex--coluna" data-form asp-action="Create" asp-controller="Finances">
                 <div class="input-container">
-                    <input name="FinanceName" id="FinanceName" class="input" type="text" placeholder="descricao" required
-                           data-descricao>
-                    <label class="input-label" for="FinanceName">Descrição</label>
+                    <input name="DescricaoFinanca" id="DescricaoFinanca" class="input" type="text" placeholder="Descrição" required />
+                    <label class="input-label" for="Descricao">Descrição</label>
                     <span class="input-mensagem-erro">Esse campo não pode estar vazio</span>
                 </div>
                 <div class="input-container">
-                    <input name="DueDate" id="DueDate" class="input" type="datetime" placeholder="dueDate"data-dueDate>
-                    <label class="input-label" for="DueDate">Data de vencimento</label>
+                    <input name="DataVencimento" id="DataVencimento" class="input" type="date" placeholder="Data de Vencimento" required />
+                    <label class="input-label" for="DataVencimento">Data de Vencimento</label>
                     <span class="input-mensagem-erro">Esse campo não pode estar vazio</span>
                 </div>
                 <div class="input-container">
-                    <input name="Price" id="Price" class="input" type="text" placeholder="valor" required data-valor>
-                    <label class="input-label" for="Price">Valor R$</label>
+                    <input name="Valor" id="Valor" class="input" type="number" placeholder="Valor R$" required step="0.01" />
+                    <label class="input-label" for="Valor">Valor R$</label>
                     <span class="input-mensagem-erro">Esse campo não pode estar vazio</span>
                 </div>
                 <button type="submit" class="botao">

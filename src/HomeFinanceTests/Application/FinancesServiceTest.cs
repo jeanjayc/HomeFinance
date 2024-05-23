@@ -1,7 +1,9 @@
 ﻿using AutoFixture;
 using HomeFinance.Application.Services;
 using HomeFinance.Domain.Models;
+using HomeFinance.Infra.DTOs.Response.Financas;
 using HomeFinance.Infra.Interfaces;
+using HomeFinance.Infra.Interfaces.DAO;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -29,15 +31,16 @@ namespace HomeFinanceTests.Application
             //Arrange
             var dividas = new Fixture().Create<Finances>();
 
-            Mock<IFinanceRepository> moqRepo = new Mock<IFinanceRepository>();
-            
-            var calcDivida = new FinancesService(moqRepo.Object);
+            var moqDAOObj = new Mock<IFinancaDAO>();
+            var moqRepoObj = new Mock<IFinanceRepository>();
+
+            var service = new FinancesService(moqRepoObj.Object, moqDAOObj.Object);
 
             //Act
-            await calcDivida.AdicionarNovasDividas(dividas);
+            await service.AdicionarNovasDividas(dividas);
 
             //Assert
-            moqRepo.Verify(f => f.AdicionarNovaDivida(dividas), Times.Once);
+            moqRepoObj.Verify(f => f.AdicionarNovaDivida(dividas), Times.Once);
         }
 
         [Trait("Category", "CRUD")]
@@ -46,11 +49,12 @@ namespace HomeFinanceTests.Application
         {
             //Arrange
             var dividas = _fixture.Create<List<Finances>>();
-            var moqObj = new Mock<IFinanceRepository>();
-            moqObj.Setup(fin => fin.ListarTodasDividas().Result).Returns(dividas);
+            var moqDAOObj = new Mock<IFinancaDAO>();
+            var moqRepoObj = new Mock<IFinanceRepository>();
+            moqRepoObj.Setup(fin => fin.ListarTodasDividas().Result).Returns(dividas);
 
             //Act
-            var service = new FinancesService(moqObj.Object);
+            var service = new FinancesService(moqRepoObj.Object, moqDAOObj.Object);
             var result = await service.BuscarTodasFinancas();
 
             //Assert
@@ -64,18 +68,19 @@ namespace HomeFinanceTests.Application
         {
             //Arrange
             var dividas = _fixture.Create<List<Finances>>();
-            var moqObj = new Mock<IFinanceRepository>();
-            var id = dividas.FirstOrDefault().FinancesId;
+            var moqDAOObj = new Mock<IFinancaDAO>();
+            var moqRepoObj = new Mock<IFinanceRepository>();
+            var id = dividas.FirstOrDefault().FinancaId;
 
-            moqObj.Setup(fin => fin.ObterFinancaPorId(id).Result).Returns(dividas.FirstOrDefault(x => x.FinancesId == id));
+            moqRepoObj.Setup(fin => fin.ObterFinancaPorId(id).Result).Returns(dividas.FirstOrDefault(x => x.FinancaId == id));
 
             //Act
-            var service = new FinancesService(moqObj.Object);
+            var service = new FinancesService(moqRepoObj.Object, moqDAOObj.Object);
             var result = service.BuscarFinancaPorId(id).Result;
 
             //Assert
             Assert.NotNull(result);
-            moqObj.Verify(fin => fin.ObterFinancaPorId(id), Times.Once);
+            moqRepoObj.Verify(fin => fin.ObterFinancaPorId(id), Times.Once);
         }
 
         [Trait("Category", "CRUD")]
@@ -83,14 +88,15 @@ namespace HomeFinanceTests.Application
         public async void Finances_BuscarFinancaPorNome_DeveBuscarFinancaPeloNome()
         {
             //Arrange
-            var dividas = _fixture.Create<List<Finances>>();
-            var moqObj = new Mock<IFinanceRepository>();
-            var nome = dividas.FirstOrDefault().FinanceName;
+            var dividas = _fixture.Create<IEnumerable<FinancaDTO>>();
+            var moqDAOObj = new Mock<IFinancaDAO>();
+            var moqRepoObj = new Mock<IFinanceRepository>();
+            var nome = dividas.FirstOrDefault().DescricaoFinanca;
 
-            moqObj.Setup(fin => fin.ObterFinancaPorNome(nome).Result).Returns(dividas.FirstOrDefault(div => div.FinanceName == nome));
+            moqDAOObj.Setup(fin => fin.ObterFinancaPorDescricao(nome).Result).Returns(dividas.FirstOrDefault(div => div.DescricaoFinanca == nome));
 
             //Act
-            var service = new FinancesService(moqObj.Object);
+            var service = new FinancesService(moqRepoObj.Object,moqDAOObj.Object);
             var result = await service.BuscarFinancaPorNome(nome);
 
             //Assert
@@ -106,13 +112,14 @@ namespace HomeFinanceTests.Application
             var dividas = _fixture.Create<List<Finances>>();
 
 
-            var moqObj = new Mock<IFinanceRepository>();
-            moqObj.Setup(fin => fin.ListarTodasDividas().Result).Returns(dividas);
+            var moqDAOObj = new Mock<IFinancaDAO>();
+            var moqRepoObj = new Mock<IFinanceRepository>();
+            moqRepoObj.Setup(fin => fin.ListarTodasDividas().Result).Returns(dividas);
 
 
-            var calcDivida = new FinancesService(moqObj.Object);
+            var service = new FinancesService(moqRepoObj.Object, moqDAOObj.Object);
             //Act
-            var vencimentoProx = calcDivida.BuscarVencimentoProximo().Result;
+            var vencimentoProx = service.BuscarVencimentoProximo().Result;
 
             //Assert
             Assert.Contains("Contas", vencimentoProx, StringComparison.OrdinalIgnoreCase);
@@ -127,15 +134,16 @@ namespace HomeFinanceTests.Application
 
             var renda = 4400;
 
-            var moqObj = new Mock<IFinanceRepository>();
-            moqObj.Setup(fin => fin.ListarTodasDividas().Result).Returns(dividas);
+            var moqDAOObj = new Mock<IFinancaDAO>();
+            var moqRepoObj = new Mock<IFinanceRepository>();
+            moqRepoObj.Setup(fin => fin.ListarTodasDividas().Result).Returns(dividas);
 
-            var calcDivida = new FinancesService(moqObj.Object);
+            var service = new FinancesService(moqRepoObj.Object, moqDAOObj.Object);
 
             var valorEsperado = renda; // - dividas.Sum(div => div.Installments.Sum(fin => fin.Price));
 
             //Act
-            var result = calcDivida.CalcularGastos(renda).Result;
+            var result = service.CalcularGastos(renda).Result;
 
             //Assert
             Assert.Equal(valorEsperado.ToString(), result.ToString());
@@ -149,12 +157,13 @@ namespace HomeFinanceTests.Application
 
             var dividas = _fixture.Create<List<Finances>>();
 
-            var moqObj = new Mock<IFinanceRepository>();
-            moqObj.Setup(fin => fin.ListarTodasDividas().Result).Returns(dividas);
+            var moqDAOObj = new Mock<IFinancaDAO>();
+            var moqRepoObj = new Mock<IFinanceRepository>();
+            moqRepoObj.Setup(fin => fin.ListarTodasDividas().Result).Returns(dividas);
 
 
             //Act
-            var service = new FinancesService(moqObj.Object);
+            var service = new FinancesService(moqRepoObj.Object, moqDAOObj.Object);
             var result = service.SomarTotalFinancas().Result;
 
             ////Assert
@@ -169,16 +178,17 @@ namespace HomeFinanceTests.Application
             //Arrange
 
             var dividaExistente = _fixture.Create<Finances>();
-            var moqObj = new Mock<IFinanceRepository>();
-            moqObj.Setup(fin => fin.AtualizarFinanca(dividaExistente).Result).Returns(dividaExistente);
+            var moqDAOObj = new Mock<IFinancaDAO>();
+            var moqRepoObj = new Mock<IFinanceRepository>();
+            moqRepoObj.Setup(fin => fin.AtualizarFinanca(dividaExistente).Result).Returns(dividaExistente);
 
             //Act
-            var service = new FinancesService(moqObj.Object);
-            var result = service.AtualizarDadosFinancas(dividaExistente.FinancesId,dividaExistente);
+            var service = new FinancesService(moqRepoObj.Object, moqDAOObj.Object);
+            var result = service.AtualizarDadosFinancas(dividaExistente.FinancaId,dividaExistente);
 
             //Assert
             Assert.NotNull(result);
-            moqObj.Verify(fin => fin.AtualizarFinanca(dividaExistente).Result, Times.Once);
+            moqRepoObj.Verify(fin => fin.AtualizarFinanca(dividaExistente).Result, Times.Once);
         }
 
         [Trait("Category", "Buscas")]
@@ -187,16 +197,17 @@ namespace HomeFinanceTests.Application
         {
             //Arrange
             var divida = _fixture.Create<Finances>();
-            var moqObj = new Mock<IFinanceRepository>();
-            var idDivida = divida.FinancesId;
+            var moqDAOObj = new Mock<IFinancaDAO>();
+            var moqRepoObj = new Mock<IFinanceRepository>();
+            var idDivida = divida.FinancaId;
 
-            moqObj.Setup(fin => fin.DeletarFinanca(idDivida).Result).Returns(divida);
+            moqRepoObj.Setup(fin => fin.DeletarFinanca(idDivida).Result).Returns(divida);
             //Act
-            var service = new FinancesService(moqObj.Object).DeletarFinancas(idDivida).Result;
+            var service = new FinancesService(moqRepoObj.Object, moqDAOObj.Object);
 
             //Arrange
             Assert.NotNull(service);
-            moqObj.Verify(fin => fin.DeletarFinanca(idDivida).Result, Times.Once);
+            moqRepoObj.Verify(fin => fin.DeletarFinanca(idDivida).Result, Times.Once);
         }
 
     }

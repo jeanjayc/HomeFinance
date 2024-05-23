@@ -20,21 +20,21 @@ namespace HomeFinance.Infra.Repositories
         {
             try
             {
-                finance.DueDate = finance.DueDate.ToUniversalTime();
+                finance.DataVencimento = finance.DataVencimento.ToUniversalTime();
                 await _context.AddAsync(finance);
                 await _context.SaveChangesAsync();
                 return finance;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Erro ao adicionar, camada repository " + $"FinancaId:{finance.FinancesId}"+ "Erro: "+ ex.Message);
+                _logger.LogError("Erro ao adicionar, camada repository " + $"FinancaId:{finance.FinancaId}"+ "Erro: "+ ex.Message);
                 return null;
             }
         }
         public async Task<Finances> ObterFinancaPorId(Guid? id)
         {
             var result = await _context.Finances
-                .FirstOrDefaultAsync(m => m.FinancesId == id);
+                .FirstOrDefaultAsync(m => m.FinancaId == id);
             return result;
         }
         public async Task<Finances> ObterFinancaPorNome(string name)
@@ -49,7 +49,7 @@ namespace HomeFinance.Infra.Repositories
 
         public async Task<List<Finances>> ListarTodasDividasNaoPagas()
         {
-            return await _context.Finances.Where(f => f.Paid == false).ToListAsync();
+            return await _context.Finances.Where(f => f.Pago == false).ToListAsync();
         }
 
         public async Task<Finances> AtualizarFinanca(Finances finance)
@@ -61,7 +61,7 @@ namespace HomeFinance.Infra.Repositories
 
         public async Task<Finances> DeletarFinanca(Guid idFinance)
         {
-            var result = await _context.Finances.FirstOrDefaultAsync(f => f.FinancesId == idFinance) ;
+            var result = await _context.Finances.FirstOrDefaultAsync(f => f.FinancaId == idFinance) ;
             _context.Finances.Remove(result);
             await _context.SaveChangesAsync();
             return result; 
@@ -71,7 +71,7 @@ namespace HomeFinance.Infra.Repositories
         {
             try
             {
-                var finance = await _context.Finances.FirstOrDefaultAsync(f => f.FinancesId == idFinance);
+                var finance = await _context.Finances.FirstOrDefaultAsync(f => f.FinancaId == idFinance);
                 if(finance != null)
                 {
                     await _context.SaveChangesAsync();

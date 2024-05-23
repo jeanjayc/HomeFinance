@@ -4,23 +4,22 @@ namespace HomeFinance.MVC.ViewModels
 {
     public class FinanceVM
     {
-        public Guid FinancesId { get; set; }
+        public Guid FinancaId { get; set; }
 
         [Display(Name = "Descrição da Divida")]
-        public string? FinanceName { get; set; }
+        public string? Descricao { get; set; }
 
         [Display(Name = "Data de Vencimento")]
-        public string DueDate { get; set; }
+        public string DataVencimento {  get; set; }
 
         [Display(Name = "Valor R$")]
-        public decimal Price { get; set; }
+        public decimal Valor { get; set; }
 
         [Display(Name = "Pago")]
-        public bool Paid { get; set; }
+        public bool Pago { get; set; }
 
         [Display(Name = "Quantidade de Parcelas")]
-        public int? QtdInstallments { get; set; }
-
-        public decimal ValorTotal { get; set; }
+        public int? QtdParcelas { get; set; }
     }
+
 }

@@ -1,5 +1,6 @@
 ﻿using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
+using HomeFinance.Infra.DTOs.Response.Financas;
 using HomeFinance.MVC.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -21,20 +22,20 @@ namespace HomeFinance.MVC.Controllers
         {
             try
             {
-                var listFinances = await _service.BuscarTodasFinancasAPagar();
+                var listFinances = await _service.BuscarTodasFinancasNaoPagas();
 
-                if (!listFinances.Any() || listFinances is null)
+                if (listFinances is null || !listFinances.Any())
                 {
                     return View("Error");
                 }
 
+                //mapper
                 var viewModel = listFinances.Select(f => new FinanceVM
                 {
-                    FinancesId = f.FinancesId,
-                    FinanceName = f.FinanceName,
-                    DueDate = f.DueDate.ToString("dd/MM/yyyy"),
-                    Price = f.Price,
-                    Paid = f.Paid
+                    Descricao = f.DescricaoFinanca,
+                    DataVencimento = f.DataVencimento.ToString("dd/MM/yyyy"),
+                    Valor = f.Valor,
+                    Pago = f.Pago
                 });
 
                 ViewBag.Total = "Total: ";
@@ -50,26 +51,40 @@ namespace HomeFinance.MVC.Controllers
 
         }
 
+        public async Task<IActionResult> BuscarFinancaPorDescricao(string descricao)
+        {
+            try
+            {
+                var result = await _service.BuscarFinancaPorNome(descricao);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
         public async Task<IActionResult> BuscarTodasFinancas()
         {
             try
             {
                 var listFinances = await _service.BuscarTodasFinancas();
 
-                if (!listFinances.Any() || listFinances is null)
+                if (listFinances is null || !listFinances.Any())
                 {
                     return View("Error");
                 }
 
                 var viewModel = listFinances.Select(f => new FinanceVM
                 {
-                    FinancesId = f.FinancesId,
-                    FinanceName = f.FinanceName,
-                    DueDate = f.DueDate.ToString("dd/MM/yyyy"),
-                    Price = f.Price,
-                    Paid = f.Paid
+                    FinancaId = f.FinancaId,
+                    Descricao = f.Descricao,
+                    DataVencimento = f.DataVencimento.ToString("dd/MM/yyyy"),
+                    Valor = f.Valor,
+                    Pago = f.Pago,
+                    QtdParcelas = f.QtdParcelas
                 });
-
 
                 return View(viewModel);
             }
@@ -79,6 +94,7 @@ namespace HomeFinance.MVC.Controllers
                 return StatusCode(500, "Erro Interno");
             }
         }
+
 
         public async Task<IActionResult> Details(Guid id)
         {
@@ -99,27 +115,21 @@ namespace HomeFinance.MVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(FinanceVM finances)
+        public async Task<IActionResult> Create(FinancaDTO financa)
         {
             try
             {
                 if (ModelState.IsValid)
                 {
-                    var newFinances = new Finances
-                    {
-                        FinancesId = Guid.NewGuid(),
-                        FinanceName = finances.FinanceName,
-                        DueDate = Convert.ToDateTime(finances.DueDate),
-                        Price = finances.Price,
-                        Paid = finances.Paid
-                    };
+                    //mapper
+                    var novaFinanca = new Finances(financa.DescricaoFinanca, financa.DataVencimento, financa.Valor);
 
-                    await _service.AdicionarNovasDividas(newFinances);
+                    await _service.AdicionarNovasDividas(novaFinanca);
 
                     return RedirectToAction(nameof(Index));
                 }
 
-                return View(finances);
+                return View(financa);
             }
             catch (Exception ex)
             {

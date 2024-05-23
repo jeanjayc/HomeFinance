@@ -22,19 +22,19 @@
             <h1 class="cartao__titulo">Editar</h1>
             <form class="flex flex--coluna" data-form asp-action="Edit" asp-controller="Finances">
                 <div class="input-container">
-                    @Html.LabelFor(model => model.FinanceName, new { @class = "form-control-label" })<br />
-                    @Html.TextBoxFor(model => model.FinanceName, new { @id = "FinanceName", @class = "input" })
-                    @Html.ValidationMessageFor(model => model.FinanceName, "", new { @class = "invalid-feedback" })
+                    @Html.LabelFor(model => model.Descricao, new { @class = "form-control-label" })<br />
+                    @Html.TextBoxFor(model => model.Descricao, new { @id = "FinanceName", @class = "input" })
+                    @Html.ValidationMessageFor(model => model.Descricao, "", new { @class = "invalid-feedback" })
                 </div>
                 <div class="input-container">
-                    @Html.LabelFor(model => model.DueDate, new { @class = "form-control-label" })<br />
-                    @Html.TextBoxFor(model => model.DueDate, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.DueDate, "", new { @class = "invalid-feedback" })
+                    @Html.LabelFor(model => model.DataVencimento, new { @class = "form-control-label" })<br />
+                    @Html.TextBoxFor(model => model.DataVencimento, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.DataVencimento, "", new { @class = "invalid-feedback" })
                 </div>
                 <div class="input-container">
-                    @Html.LabelFor(model => model.Price, new { @class = "form-control-label" })<br />
-                    @Html.TextBoxFor(model => model.Price, new { @class = "form-control" })
-                    @Html.ValidationMessageFor(model => model.Price, "", new { @class = "invalid-feedback" })
+                    @Html.LabelFor(model => model.Valor, new { @class = "form-control-label" })<br />
+                    @Html.TextBoxFor(model => model.Valor, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.Valor, "", new { @class = "invalid-feedback" })
                 </div>
                 <button type="submit" class="botao">
                     Editar
