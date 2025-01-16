@@ -1,8 +1,14 @@
+using Dapper;
 using HomeFinance.Application.Interfaces;
 using HomeFinance.Application.Services;
+using HomeFinance.Infra.DAO;
 using HomeFinance.Infra.Data;
+using HomeFinance.Infra.Identity.Data;
+using HomeFinance.Infra.Identity.Service;
 using HomeFinance.Infra.Interfaces;
+using HomeFinance.Infra.Interfaces.DAO;
 using HomeFinance.Infra.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 
@@ -18,8 +24,21 @@ var connectionString = builder.Configuration.GetConnectionString("Connection");
 builder.Services.AddEntityFrameworkNpgsql()
     .AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
+builder.Services.AddEntityFrameworkNpgsql()
+    .AddDbContext<IdentityDataContext>(options => options.UseNpgsql(connectionString));
+
+builder.Services.AddDefaultIdentity<IdentityUser>()
+                .AddRoles<IdentityRole>()
+                .AddEntityFrameworkStores<IdentityDataContext>()
+                .AddDefaultTokenProviders();
+
+DefaultTypeMap.MatchNamesWithUnderscores = true;
+
 builder.Services.AddTransient<IFinanceRepository, FinancesRepository>();
 builder.Services.AddTransient<IFinancesService, FinancesService>();
+builder.Services.AddTransient<IIdentityService, IdentityService>();
+builder.Services.AddTransient<IFinancaDAO, FinancasDAO>();
+
 
 builder.Host.UseSerilog(((ctx, config) => config.ReadFrom.Configuration(ctx.Configuration)));
 var app = builder.Build();

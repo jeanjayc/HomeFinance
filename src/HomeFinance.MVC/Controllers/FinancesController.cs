@@ -32,6 +32,7 @@ namespace HomeFinance.MVC.Controllers
                 //mapper
                 var viewModel = listFinances.Select(f => new FinanceVM
                 {
+                    FinancaId = f.IdFinanca,
                     Descricao = f.DescricaoFinanca,
                     DataVencimento = f.DataVencimento.ToString("dd/MM/yyyy"),
                     Valor = f.Valor,
@@ -60,7 +61,7 @@ namespace HomeFinance.MVC.Controllers
             }
             catch (Exception ex)
             {
-
+                _logger.LogError(ex, "Erro ao buscar a divida com descrição {descricao}", descricao);
                 throw;
             }
         }
@@ -76,6 +77,7 @@ namespace HomeFinance.MVC.Controllers
                     return View("Error");
                 }
 
+                //mapper
                 var viewModel = listFinances.Select(f => new FinanceVM
                 {
                     FinancaId = f.FinancaId,
@@ -98,12 +100,13 @@ namespace HomeFinance.MVC.Controllers
 
         public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null || _service.BuscarFinancaPorId(id) == null)
+            var finances = await _service.BuscarFinancaPorId(id);
+
+            if (finances is null)
             {
-                return NotFound();
+                return View("Error");
             }
 
-            var finances = await _service.BuscarFinancaPorId(id);
             if (finances == null)
             {
                 return NotFound();
@@ -141,11 +144,6 @@ namespace HomeFinance.MVC.Controllers
 
         public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == null || await _service.BuscarFinancaPorId(id) == null)
-            {
-                return NotFound();
-            }
-
             var finances = await _service.BuscarFinancaPorId(id);
             if (finances == null)
             {
@@ -158,7 +156,7 @@ namespace HomeFinance.MVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, Finances finances)
         {
-            
+
             if (ModelState.IsValid)
             {
                 try
@@ -167,7 +165,7 @@ namespace HomeFinance.MVC.Controllers
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Método " + nameof(Edit), $"Erro: {ex.Message}");
+                    _logger.LogError(ex, "Erro ao editar a divida com Id {id}", id);
                     throw;
                 }
                 return RedirectToAction(nameof(Index));
@@ -177,32 +175,31 @@ namespace HomeFinance.MVC.Controllers
 
         public async Task<IActionResult> AlterarValorPago(Guid id)
         {
-            var financaAtualizada = await _service.AlterarValorPago(id);
+            try
+            {
+                var financaAtualizada = await _service.AlterarValorPago(id);
 
-            return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao marcar como paga a divida com Id {id}", id);
+                throw;
+            }
         }
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            if (id == Guid.Empty)
-            {
-                return NotFound();
-            }
-            var finances = await _service.BuscarFinancaPorId(id);
-            if (finances != null)
+            try
             {
                 await _service.DeletarFinancas(id);
+                return RedirectToAction(nameof(Index));
             }
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool FinancesExists(Guid id)
-        {
-            var result = _service.BuscarFinancaPorId(id);
-            if (result is null)
-                return false;
-
-            return true;
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao deletar a divida com Id {id}", id);
+                throw;
+            }
         }
     }
 }

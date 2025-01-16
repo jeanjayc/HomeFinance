@@ -102,9 +102,13 @@ namespace HomeFinance.Application.Services
             var result = await _financesRepository.AtualizarFinanca(financa);
             return result;
         }
-        public async Task<Finances> DeletarFinancas(Guid id)
+        public async Task DeletarFinancas(Guid id)
         {
-            return await _financesRepository.DeletarFinanca(id);
+            if(id == Guid.Empty)
+            {
+                return;
+            }
+            await _financesRepository.DeletarFinanca(id);
         }
 
         public async Task<string> BuscarVencimentoProximo()

@@ -11,6 +11,6 @@ namespace HomeFinance.Infra.Interfaces
         Task<Finances> ObterFinancaPorNome(string name);
         Task<Finances> AtualizarFinanca(Finances finance);
         Task AtualizarPago(Guid? id,bool status);
-        Task<Finances> DeletarFinanca(Guid idFinance);
+        Task DeletarFinanca(Guid idFinance);
     }
 }

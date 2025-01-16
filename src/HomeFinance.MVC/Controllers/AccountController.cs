@@ -1,6 +1,5 @@
 ﻿using HomeFinance.Infra.DTOs.Request;
 using HomeFinance.Infra.Interfaces;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HomeFinance.MVC.Controllers

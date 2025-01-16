@@ -55,13 +55,13 @@
                             @if (item.Pago)
                             {
                                 <form asp-action="AlterarValorPago" asp-route-id="@item.FinancaId">
-                                    <button type="submit" class="btn btn-success btn-sm rounded-pill">Paga</button>
+                                    <button type="submit" class="btn btn-success btn-sm rounded-pill" title="alterar status">Paga</button>
                                 </form>
                             }
                             else
                             {
                                 <form asp-action="AlterarValorPago" asp-route-id="@item.FinancaId">
-                                    <button type="submit" class="btn btn-danger btn-sm rounded-pill">Pagar</button>
+                                    <button type="submit" class="btn btn-danger btn-sm rounded-pill" title="alterar status">Pagar</button>
                                 </form>
                             }
                         </td>

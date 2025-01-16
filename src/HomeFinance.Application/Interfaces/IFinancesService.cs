@@ -21,7 +21,7 @@ namespace HomeFinance.Application.Interfaces
 
         Task<decimal> CalcularGastos(decimal renda);
 
-        Task<Finances> DeletarFinancas(Guid id);
+        Task DeletarFinancas(Guid id);
 
         Task<decimal> AlterarValorPago(Guid id);
 

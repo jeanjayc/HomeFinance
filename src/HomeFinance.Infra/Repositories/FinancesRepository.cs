@@ -59,12 +59,17 @@ namespace HomeFinance.Infra.Repositories
             return finance;
         }
 
-        public async Task<Finances> DeletarFinanca(Guid idFinance)
+        public async Task DeletarFinanca(Guid idFinance)
         {
-            var result = await _context.Finances.FirstOrDefaultAsync(f => f.FinancaId == idFinance) ;
+            var result = await ObterFinancaPorId(idFinance);
+
+            if(result == null)
+            {
+                return;
+            }
+
             _context.Finances.Remove(result);
             await _context.SaveChangesAsync();
-            return result; 
         }
 
         public async Task AtualizarPago(Guid? idFinance, bool status)
