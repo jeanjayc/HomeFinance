@@ -153,7 +153,7 @@ namespace HomeFinance.Application.Services
         public async Task<decimal> AlterarValorPago(Guid id)
         {
             var finances = await BuscarFinancaPorId(id);
-
+ 
             if(finances is null)
                 throw new ArgumentNullException("Finança não encontrada");
 

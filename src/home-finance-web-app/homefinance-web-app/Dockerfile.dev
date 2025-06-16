@@ -1,0 +1,19 @@
+FROM node:20-alpine
+
+ENV HOME=/home/app
+WORKDIR $HOME
+
+# Copia apenas os arquivos necessários para instalar dependências primeiro
+COPY package.json package-lock.json ./
+
+# Instala as dependências antes de copiar o código-fonte
+RUN npm install
+
+# Agora copia o restante do código-fonte
+COPY . .
+
+# Expõe a porta que a aplicação irá rodar
+EXPOSE 4000
+
+# Comando de inicialização
+CMD ["npm", "start"]
