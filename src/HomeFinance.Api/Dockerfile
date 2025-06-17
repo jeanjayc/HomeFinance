@@ -16,6 +16,7 @@ COPY ["src/HomeFinance.Api/HomeFinance.Api.csproj", "src/HomeFinance.Api/"]
 COPY ["src/HomeFinance.Application/HomeFinance.Application.csproj", "src/HomeFinance.Application/"]
 COPY ["src/HomeFinance.Infra/HomeFinance.Infra.csproj", "src/HomeFinance.Infra/"]
 COPY ["src/HomeFinance.Models/HomeFinance.Domain.csproj", "src/HomeFinance.Models/"]
+COPY ["src/HomeFinance.Models/HomeFinance.Domain.csproj", "HomeFinance.Models/"]
 RUN dotnet restore "./src/HomeFinance.Api/HomeFinance.Api.csproj"
 COPY . .
 WORKDIR "/src/src/HomeFinance.Api"

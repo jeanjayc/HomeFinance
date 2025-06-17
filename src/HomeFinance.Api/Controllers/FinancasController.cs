@@ -19,6 +19,7 @@ namespace HomeFinance.Api.Controllers
         {
             try
             {
+                _logger.LogInformation($"Iniciando método da api para buscar todas finanças");
                 var financas = await _service.BuscarTodasFinancas();
                 return Ok(financas);
             }
@@ -31,7 +32,7 @@ namespace HomeFinance.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> BuscarFinancaPorId(Guid id)
         {
-            var financa = _service.BuscarFinancaPorId(id);
+            var financa = await _service.BuscarFinancaPorId(id);
             return Ok(financa);
         }
     }
