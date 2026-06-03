@@ -1,8 +1,9 @@
-﻿using HomeFinance.Application.Interfaces;
+using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
 using HomeFinance.Infra.DTOs.Response.Financas;
 using HomeFinance.Infra.Interfaces;
 using HomeFinance.Infra.Interfaces.DAO;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace HomeFinance.Application.Services
 {
@@ -10,10 +11,12 @@ namespace HomeFinance.Application.Services
     {
         private readonly IFinanceRepository _financesRepository;
         private readonly IFinancaDAO _financaDao;
-        public FinancesService(IFinanceRepository financesRepository, IFinancaDAO financaDAO)
+        private readonly IMemoryCache _memoryCache;
+        public FinancesService(IFinanceRepository financesRepository, IFinancaDAO financaDAO, IMemoryCache memoryCache)
         {
             _financesRepository = financesRepository;
             _financaDao = financaDAO;
+            _memoryCache = memoryCache;
         }
 
         public async Task AdicionarNovasDividas(Finances finance)
@@ -32,12 +35,22 @@ namespace HomeFinance.Application.Services
             }
 
         }
-        public async Task<List<Finances>> BuscarTodasFinancas()
+        public async Task<IEnumerable<FinancaDTO>> BuscarTodasFinancas()
         {
             try
             {
-                var result = await _financesRepository.ListarTodasDividas();
-                return result;
+                var finances = await _financaDao.ObterTodasFinancas();
+                //var finances = await _memoryCache.GetOrCreateAsync("allfinances", async cacheEntry =>
+                //{
+                //    cacheEntry.SlidingExpiration = TimeSpan.FromSeconds(60);
+                //    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
+
+
+                //    return financesDb;
+
+                //});
+
+                return finances;
             }
             catch (Exception ex)
             {
@@ -48,8 +61,9 @@ namespace HomeFinance.Application.Services
 
         public async Task<IEnumerable<FinancaDTO>> BuscarTodasFinancasNaoPagas()
         {
+
             var result = await _financaDao.ObterTodasFinancasNaoPagas();
-             return result;
+            return result;
         }
         public async Task<Finances> BuscarFinancaPorId(Guid id)
         {
@@ -90,7 +104,7 @@ namespace HomeFinance.Application.Services
         {
             var financa = await BuscarFinancaPorId(id);
 
-            if(financa is null)
+            if (financa is null)
             {
                 throw new ArgumentNullException("Finança não encontrada");
             }
@@ -104,7 +118,7 @@ namespace HomeFinance.Application.Services
         }
         public async Task DeletarFinancas(Guid id)
         {
-            if(id == Guid.Empty)
+            if (id == Guid.Empty)
             {
                 return;
             }
@@ -138,7 +152,7 @@ namespace HomeFinance.Application.Services
             var financas = await BuscarTodasFinancas();
             var somaGastos = 0m;
 
-            foreach(var item in financas)
+            foreach (var item in financas)
             {
                 //somaGastos = item.Installments.Sum(fin => fin.Price);
             }
@@ -152,20 +166,33 @@ namespace HomeFinance.Application.Services
 
         public async Task<decimal> AlterarValorPago(Guid id)
         {
-            var finances = await BuscarFinancaPorId(id);
- 
-            if(finances is null)
-                throw new ArgumentNullException("Finança não encontrada");
+            try
+            {
+                var finances = await BuscarFinancaPorId(id);
 
-            finances.Pago = finances.Pago is true ? finances.Pago = false : finances.Pago = true;
+                if (finances is null)
+                    throw new ArgumentNullException("Finança não encontrada");
 
-            await _financesRepository.AtualizarFinanca(finances);
+                finances.Pago = finances.Pago is true ? finances.Pago = false : finances.Pago = true;
 
-            var totalDividas = await SomarTotalFinancas();
+                await _financesRepository.AtualizarFinanca(finances);
 
-            var valorAtualizado = totalDividas - finances.Valor;
+                var totalDividas = await SomarTotalFinancas();
 
-            return valorAtualizado;
+                var valorAtualizado = totalDividas - finances.Valor;
+
+                return valorAtualizado;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+        public Task<int> DesmarcarTodasFinancasPagasAsync()
+        {
+            return _financesRepository.DesmarcarTodasFinancasPagasAsync();
         }
 
         public async Task<decimal> SomarTotalFinancas()
@@ -174,7 +201,7 @@ namespace HomeFinance.Application.Services
 
             var result = 0m;
 
-            foreach(var finance in todasFinancas)
+            foreach (var finance in todasFinancas)
             {
                 result += finance.Valor;
             }

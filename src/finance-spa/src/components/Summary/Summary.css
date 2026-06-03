@@ -1,0 +1,45 @@
+.summary {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.summary__card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem 1.5rem;
+  flex: 1;
+  min-width: 140px;
+}
+
+.summary__label {
+  margin: 0 0 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.summary__value {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.summary__value--income {
+  color: #059669;
+}
+
+.summary__value--expense {
+  color: #dc2626;
+}
+
+.summary__value--balance {
+  color: #1d4ed8;
+}
+
+.summary__value--balance.negative {
+  color: #dc2626;
+}

@@ -33,9 +33,13 @@ namespace HomeFinance.Infra.DAO
         public async Task<IEnumerable<FinancaDTO>> ObterTodasFinancas()
         {
             var consulta = @"SELECT 
-                              f.idfinanca as IdFinanca, f.descricao as DescricaoFinanca, f.pago as Pago, 
-                              f.data_vencimento as DataVencimento ,f.qtd_parcelas as QtdParcelas, f.valor as Valor
-                             FROM financas f ";
+                                f.idfinanca as IdFinanca, 
+                                f.descricao as DescricaoFinanca, 
+                                f.pago as Pago, 
+                                f.data_vencimento as DataVencimento, 
+                                f.qtd_parcelas as QtdParcelas, 
+                                f.valor as Valor
+                            FROM financas f  ";
 
             var todasFinancas = await _connection.QueryAsync<FinancaDTO>(consulta);
             return todasFinancas;

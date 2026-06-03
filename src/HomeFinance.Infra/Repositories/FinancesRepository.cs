@@ -1,4 +1,4 @@
-﻿using HomeFinance.Domain.Models;
+using HomeFinance.Domain.Models;
 using HomeFinance.Infra.Data;
 using HomeFinance.Infra.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -87,6 +87,13 @@ namespace HomeFinance.Infra.Repositories
 
                 throw;
             }
+        }
+
+        public async Task<int> DesmarcarTodasFinancasPagasAsync()
+        {
+            return await _context.Finances
+                .Where(f => f.Pago)
+                .ExecuteUpdateAsync(setters => setters.SetProperty(f => f.Pago, false));
         }
     }
 }

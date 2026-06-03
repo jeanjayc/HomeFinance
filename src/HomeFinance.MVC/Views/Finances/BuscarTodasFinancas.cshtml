@@ -1,4 +1,4 @@
-﻿@model IEnumerable<HomeFinance.MVC.ViewModels.FinanceVM>
+@model IEnumerable<HomeFinance.MVC.ViewModels.FinanceVM>
 
 @{
     ViewData["Title"] = "Todas as financas";
@@ -25,6 +25,16 @@
 
 <body>
     <main class="finances-container">
+        @if (TempData["MensagemResetPagas"] != null)
+        {
+            <p class="alert alert-info mb-3" role="alert">@TempData["MensagemResetPagas"]</p>
+        }
+        <form asp-action="DesmarcarTodasFinancasPagas" method="post" class="mb-3">
+            <button type="submit" class="btn btn-outline-secondary btn-sm rounded-pill"
+                    onclick="return confirm('Desmarcar todas as finanças marcadas como pagas? Use no início de um novo ciclo mensal para contas recorrentes.');">
+                Desmarcar todas como pagas
+            </button>
+        </form>
         <table class="tabela">
             <thead>
                 <tr>

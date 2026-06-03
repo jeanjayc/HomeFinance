@@ -1,4 +1,4 @@
-﻿using HomeFinance.Domain.Models;
+using HomeFinance.Domain.Models;
 using HomeFinance.Infra.DTOs.Response.Financas;
 
 namespace HomeFinance.Application.Interfaces
@@ -13,7 +13,7 @@ namespace HomeFinance.Application.Interfaces
 
         Task<Finances> BuscarFinancaPorNome(string name);
 
-        Task<List<Finances>> BuscarTodasFinancas();
+        Task<IEnumerable<FinancaDTO>> BuscarTodasFinancas();
 
         Task<IEnumerable<FinancaDTO>> BuscarTodasFinancasNaoPagas();
 
@@ -24,6 +24,8 @@ namespace HomeFinance.Application.Interfaces
         Task DeletarFinancas(Guid id);
 
         Task<decimal> AlterarValorPago(Guid id);
+
+        Task<int> DesmarcarTodasFinancasPagasAsync();
 
         Task<decimal> SomarTotalFinancas();
     }

@@ -1,6 +1,8 @@
 using Dapper;
 using HomeFinance.Application.Interfaces;
 using HomeFinance.Application.Services;
+using HomeFinance.Application.Subject;
+using HomeFinance.Domain.Models.Observer.Interface;
 using HomeFinance.Infra.DAO;
 using HomeFinance.Infra.Data;
 using HomeFinance.Infra.Identity.Data;
@@ -28,12 +30,15 @@ builder.Services.AddDefaultIdentity<IdentityUser>()
                 .AddEntityFrameworkStores<IdentityDataContext>()
                 .AddDefaultTokenProviders();
 
+builder.Services.AddMemoryCache();
+
 DefaultTypeMap.MatchNamesWithUnderscores = true;
 
 builder.Services.AddTransient<IFinanceRepository, FinancesRepository>();
 builder.Services.AddTransient<IFinancesService, FinancesService>();
 builder.Services.AddTransient<IIdentityService, IdentityService>();
 builder.Services.AddTransient<IFinancaDAO, FinancasDAO>();
+builder.Services.AddTransient<ITransactionService, TransactionService>();
 
 builder.Host.UseSerilog(((ctx, config) => config.ReadFrom.Configuration(ctx.Configuration)));
 

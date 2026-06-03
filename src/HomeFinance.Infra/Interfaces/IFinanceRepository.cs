@@ -1,4 +1,4 @@
-﻿using HomeFinance.Domain.Models;
+using HomeFinance.Domain.Models;
 
 namespace HomeFinance.Infra.Interfaces
 {
@@ -11,6 +11,7 @@ namespace HomeFinance.Infra.Interfaces
         Task<Finances> ObterFinancaPorNome(string name);
         Task<Finances> AtualizarFinanca(Finances finance);
         Task AtualizarPago(Guid? id,bool status);
+        Task<int> DesmarcarTodasFinancasPagasAsync();
         Task DeletarFinanca(Guid idFinance);
     }
 }

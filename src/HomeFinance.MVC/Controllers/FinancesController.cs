@@ -1,4 +1,4 @@
-﻿using HomeFinance.Application.Interfaces;
+using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
 using HomeFinance.Infra.DTOs.Response.Financas;
 using HomeFinance.MVC.ViewModels;
@@ -80,8 +80,8 @@ namespace HomeFinance.MVC.Controllers
                 //mapper
                 var viewModel = listFinances.Select(f => new FinanceVM
                 {
-                    FinancaId = f.FinancaId,
-                    Descricao = f.Descricao,
+                    FinancaId = f.IdFinanca,
+                    Descricao = f.DescricaoFinanca,
                     DataVencimento = f.DataVencimento.ToString("dd/MM/yyyy"),
                     Valor = f.Valor,
                     Pago = f.Pago,
@@ -185,6 +185,26 @@ namespace HomeFinance.MVC.Controllers
             {
                 _logger.LogError(ex, "Erro ao marcar como paga a divida com Id {id}", id);
                 throw;
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DesmarcarTodasFinancasPagas()
+        {
+            try
+            {
+                var alteradas = await _service.DesmarcarTodasFinancasPagasAsync();
+                TempData["MensagemResetPagas"] = alteradas == 0
+                    ? "Nenhuma finança estava marcada como paga."
+                    : $"{alteradas} finança(s) desmarcada(s) como pagas.";
+                return RedirectToAction(nameof(BuscarTodasFinancas));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao desmarcar todas as financas pagas");
+                TempData["MensagemResetPagas"] = "Não foi possível desmarcar as finanças. Tente novamente.";
+                return RedirectToAction(nameof(BuscarTodasFinancas));
             }
         }
 
