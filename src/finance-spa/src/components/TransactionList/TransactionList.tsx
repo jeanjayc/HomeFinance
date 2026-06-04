@@ -5,9 +5,20 @@ import "./TransactionList.css";
 type TransactionListProps = {
   transactions: Transaction[];
   onTogglePaid: (id: string) => void;
+  onDeleteTransaction: (id: string) => Promise<void>;
 };
 
-function TransactionList({ transactions, onTogglePaid }: TransactionListProps) {
+function TransactionList({
+  transactions,
+  onTogglePaid,
+  onDeleteTransaction,
+}: TransactionListProps) {
+  async function handleDelete(id: string, label: string) {
+    const confirmed = window.confirm(`Excluir o lançamento "${label}"?`);
+    if (!confirmed) return;
+    await onDeleteTransaction(id);
+  }
+
   return (
     <div className="transaction-list">
       <h3 className="transaction-list__title">Lançamentos</h3>
@@ -29,6 +40,12 @@ function TransactionList({ transactions, onTogglePaid }: TransactionListProps) {
             installmentNumber={transaction.installmentNumber}
             totalInstallments={transaction.totalInstallments}
             onTogglePaid={onTogglePaid}
+            onDelete={() =>
+              handleDelete(
+                transaction.id,
+                transaction.title || transaction.description || "Sem título"
+              )
+            }
           />
         ))}
       </div>

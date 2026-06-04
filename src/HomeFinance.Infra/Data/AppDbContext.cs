@@ -13,8 +13,6 @@ namespace HomeFinance.Infra.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            if (!options.IsConfigured)
-                options.UseNpgsql("User ID=postgres;Password=71321787;Host=localhost;Port=5432;Database=HomeFinance;Pooling=true;");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

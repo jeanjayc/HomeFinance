@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Design;
 
 namespace HomeFinance.Infra.Data
 {
@@ -7,8 +7,11 @@ namespace HomeFinance.Infra.Data
     {
         public AppDbContext CreateDbContext(string[] args)
         {
+            var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__Connection")
+                ?? "Host=localhost;Port=5432;Database=HomeFinance;Username=postgres;Password=postgres";
+
             var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseNpgsql("User ID=postgres;Password=71321787;Host=localhost;Port=5432;Database=HomeFinance;Pooling=true;");
+            optionsBuilder.UseNpgsql(connectionString);
 
             return new AppDbContext(optionsBuilder.Options);
         }

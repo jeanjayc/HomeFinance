@@ -1,4 +1,5 @@
 using HomeFinance.Domain.Models;
+using HomeFinance.Infra.DTOs.Request.Financas;
 using HomeFinance.Infra.DTOs.Response.Financas;
 
 namespace HomeFinance.Application.Interfaces
@@ -6,6 +7,10 @@ namespace HomeFinance.Application.Interfaces
     public interface IFinancesService
     {
         Task AdicionarNovasDividas(Finances finance);
+
+        Task<FinancaDTO> CriarFinanca(FinancaCreateRequest request);
+
+        Task<FinancaDTO?> AtualizarFinanca(FinancaUpdateRequest request);
 
         Task<Finances> AtualizarDadosFinancas(Guid id,Finances finances);
 

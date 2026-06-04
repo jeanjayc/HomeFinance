@@ -1,82 +1,141 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
+import {
+  alternarPago,
+  atualizarFinanca,
+  buscarTodasFinancas,
+  criarFinanca,
+  deletarFinanca,
+} from "../api/financasApi";
+import { ApiError } from "../api/client";
+import { toCreateRequest, toTransaction, toUpdateRequest } from "../mappers/financaMapper";
 import { type Transaction } from "../types/Transaction";
 
-function getCurrentMonth(): string {
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  return `${now.getFullYear()}-${month}`;
-}
+export function useTransactions() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
-function normalizeTransaction(raw: Record<string, unknown>): Transaction {
-  const referenceMonth = typeof raw.referenceMonth === "string" ? raw.referenceMonth : getCurrentMonth();
-  const status = raw.status === "paid" ? "paid" : "pending";
-  const recurrenceType =
-    raw.recurrenceType === "fixed" || raw.recurrenceType === "installment" ? raw.recurrenceType : "single";
+  const loadTransactions = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await buscarTodasFinancas();
+      setTransactions(data.map(toTransaction));
+    } catch (err) {
+      const message =
+        err instanceof ApiError
+          ? `Erro ao carregar lançamentos (${err.status})`
+          : "Erro ao carregar lançamentos";
+      setError(message);
+      setTransactions([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    void loadTransactions();
+  }, [loadTransactions]);
+
+  async function addTransaction(transaction: Transaction) {
+    setSaving(true);
+    setError(null);
+    try {
+      const created = await criarFinanca(toCreateRequest(transaction));
+      if (
+        transaction.recurrenceType === "installment" &&
+        (transaction.totalInstallments ?? 0) > 1
+      ) {
+        await loadTransactions();
+      } else {
+        setTransactions((prev) => [...prev, toTransaction(created)]);
+      }
+    } catch (err) {
+      const message =
+        err instanceof ApiError
+          ? `Erro ao salvar lançamento (${err.status})`
+          : "Erro ao salvar lançamento";
+      setError(message);
+      throw err;
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function updateTransaction(transaction: Transaction) {
+    setSaving(true);
+    setError(null);
+    try {
+      const updated = await atualizarFinanca(toUpdateRequest(transaction));
+      setTransactions((prev) =>
+        prev.map((t) => (t.id === transaction.id ? toTransaction(updated) : t))
+      );
+    } catch (err) {
+      const message =
+        err instanceof ApiError
+          ? `Erro ao atualizar lançamento (${err.status})`
+          : "Erro ao atualizar lançamento";
+      setError(message);
+      throw err;
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function deleteTransaction(id: string) {
+    setError(null);
+    const previous = transactions;
+    setTransactions((prev) => prev.filter((t) => t.id !== id));
+
+    try {
+      await deletarFinanca(id);
+    } catch (err) {
+      setTransactions(previous);
+      const message =
+        err instanceof ApiError
+          ? `Erro ao excluir lançamento (${err.status})`
+          : "Erro ao excluir lançamento";
+      setError(message);
+      throw err;
+    }
+  }
+
+  async function togglePaid(id: string) {
+    setError(null);
+    const previous = transactions;
+    setTransactions((prev) =>
+      prev.map((t) =>
+        t.id === id
+          ? { ...t, status: t.status === "paid" ? "pending" : "paid" }
+          : t
+      )
+    );
+
+    try {
+      const updated = await alternarPago(id);
+      setTransactions((prev) =>
+        prev.map((t) => (t.id === id ? toTransaction(updated) : t))
+      );
+    } catch (err) {
+      setTransactions(previous);
+      const message =
+        err instanceof ApiError
+          ? `Erro ao atualizar status (${err.status})`
+          : "Erro ao atualizar status";
+      setError(message);
+    }
+  }
 
   return {
-    id: typeof raw.id === "string" ? raw.id : Date.now().toString(),
-    title: typeof raw.title === "string" ? raw.title : "",
-    description: typeof raw.description === "string" ? raw.description : "",
-    amount: typeof raw.amount === "number" ? raw.amount : 0,
-    category: raw.category === "income" ? "income" : "expense",
-    referenceMonth,
-    status,
-    recurrenceType,
-    totalInstallments: typeof raw.totalInstallments === "number" ? raw.totalInstallments : undefined,
-    installmentNumber: typeof raw.installmentNumber === "number" ? raw.installmentNumber : undefined,
-    dueDay: typeof raw.dueDay === "number" ? raw.dueDay : undefined,
-    templateId: typeof raw.templateId === "string" ? raw.templateId : undefined,
+    transactions,
+    loading,
+    error,
+    saving,
+    loadTransactions,
+    addTransaction,
+    updateTransaction,
+    deleteTransaction,
+    togglePaid,
   };
-}
-
-export function useTransactions() {
-    const [transactions, setTransactions] = useState<Transaction[]>(() => {
-        const storedTransactions = localStorage.getItem("transactions");
-
-        if (!storedTransactions) {
-          return [];
-        }
-
-        try {
-          const parsed = JSON.parse(storedTransactions);
-          if (!Array.isArray(parsed)) {
-            return [];
-          }
-          return parsed.map(normalizeTransaction);
-        } catch {
-          return [];
-        }
-    });
-
-    useEffect(() => {
-      localStorage.setItem("transactions", JSON.stringify(transactions));
-    }, [transactions]);
-
-    function addTransaction(transaction: Transaction) {
-      setTransactions((prev) => [...prev, transaction]);
-    }
-
-    function deleteTransaction(id: string) {
-      setTransactions((prev) => prev.filter((t) => t.id !== id));
-    }
-
-    function togglePaid(id: string) {
-      setTransactions((prev) =>
-        prev.map((t) =>
-          t.id === id
-            ? {
-                ...t,
-                status: t.status === "paid" ? "pending" : "paid",
-              }
-            : t
-        )
-      );
-    }
-
-    return {
-        transactions,
-        addTransaction,
-        deleteTransaction,
-        togglePaid,
-    };
 }

@@ -2,60 +2,105 @@ import { useState } from "react";
 import { type Transaction, type RecurrenceType } from "../../types/Transaction";
 import "./TransactionForm.css";
 
+const MONTH_LABELS = [
+  "Janeiro",
+  "Fevereiro",
+  "Março",
+  "Abril",
+  "Maio",
+  "Junho",
+  "Julho",
+  "Agosto",
+  "Setembro",
+  "Outubro",
+  "Novembro",
+  "Dezembro",
+];
+
 type TransactionFormProps = {
-    onAddTransaction: (transaction: Transaction) => void;
+  onSubmit: (transaction: Transaction) => void | Promise<void>;
+  saving?: boolean;
+  initialTransaction?: Transaction;
+  submitLabel?: string;
+  title?: string;
 };
 
-function getCurrentMonth(): string {
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  return `${now.getFullYear()}-${month}`;
+function getCurrentMonth(): number {
+  return new Date().getMonth() + 1;
 }
 
-function TransactionForm({ onAddTransaction }: TransactionFormProps) {
-    const [description, setDescription] = useState("");
-    const [amount, setAmount] = useState<number>(0);
-    const [category, setCategory] = useState<"income" | "expense">("expense");
-    const [title, setTitle] = useState("");
-    const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>("single");
-    const [totalInstallments, setTotalInstallments] = useState<number>(1);
-    const [referenceMonth, setReferenceMonth] = useState<string>(getCurrentMonth());
-    const [dueDay, setDueDay] = useState<number | undefined>(undefined);
+function TransactionForm({
+  onSubmit,
+  saving = false,
+  initialTransaction,
+  submitLabel,
+  title: formTitle,
+}: TransactionFormProps) {
+  const isEdit = Boolean(initialTransaction);
 
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>){
-        event.preventDefault();
+  const [description, setDescription] = useState(initialTransaction?.description ?? "");
+  const [amount, setAmount] = useState<number>(initialTransaction?.amount ?? 0);
+  const [category, setCategory] = useState<"income" | "expense">(
+    initialTransaction?.category ?? "expense"
+  );
+  const [transactionTitle, setTransactionTitle] = useState(initialTransaction?.title ?? "");
+  const [recurrenceType, setRecurrenceType] = useState<RecurrenceType>(
+    initialTransaction?.recurrenceType ?? "single"
+  );
+  const [totalInstallments, setTotalInstallments] = useState<number>(
+    initialTransaction?.totalInstallments ?? 1
+  );
+  const [referenceMonth, setReferenceMonth] = useState<number>(
+    initialTransaction?.referenceMonth ?? getCurrentMonth()
+  );
+  const [dueDay, setDueDay] = useState<number | undefined>(initialTransaction?.dueDay);
+  const [status, setStatus] = useState<"pending" | "paid">(
+    initialTransaction?.status ?? "pending"
+  );
 
-        const month = referenceMonth || getCurrentMonth();
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
 
-        const newTransaction: Transaction = {
-            id: Date.now().toString(),
-            title,
-            description,
-            amount,
-            category,
-            referenceMonth: month,
-            status: "pending",
-            recurrenceType,
-            totalInstallments: recurrenceType === "installment" ? totalInstallments || 1 : undefined,
-            installmentNumber: recurrenceType === "installment" ? 1 : undefined,
-            dueDay,
-        };
+    const month = referenceMonth || getCurrentMonth();
 
-        onAddTransaction(newTransaction);
+    const transaction: Transaction = {
+      id: initialTransaction?.id ?? crypto.randomUUID(),
+      title: transactionTitle,
+      description,
+      amount,
+      category,
+      referenceMonth: month,
+      status: isEdit ? status : "pending",
+      recurrenceType: initialTransaction?.recurrenceType ?? recurrenceType,
+      totalInstallments:
+        (initialTransaction?.recurrenceType ?? recurrenceType) === "installment"
+          ? (initialTransaction?.totalInstallments ?? totalInstallments) || 1
+          : undefined,
+      installmentNumber: initialTransaction?.installmentNumber,
+      dueDay,
+      templateId: initialTransaction?.templateId,
+    };
 
-        setTitle("");
-        setDescription("");
-        setAmount(0);
-        setCategory("expense");
-        setRecurrenceType("single");
-        setTotalInstallments(1);
-        setReferenceMonth(getCurrentMonth());
-        setDueDay(undefined);
+    await onSubmit(transaction);
+
+    if (!isEdit) {
+      setTransactionTitle("");
+      setDescription("");
+      setAmount(0);
+      setCategory("expense");
+      setRecurrenceType("single");
+      setTotalInstallments(1);
+      setReferenceMonth(getCurrentMonth());
+      setDueDay(undefined);
+      setStatus("pending");
     }
+  }
 
-    return (
+  return (
     <form className="transaction-form" onSubmit={handleSubmit}>
-      <h3 className="transaction-form__title">Novo lançamento</h3>
+      <h3 className="transaction-form__title">
+        {formTitle ?? (isEdit ? "Editar lançamento" : "Novo lançamento")}
+      </h3>
 
       <div className="transaction-form__field">
         <label className="transaction-form__label" htmlFor="transaction-title">Título</label>
@@ -64,8 +109,9 @@ function TransactionForm({ onAddTransaction }: TransactionFormProps) {
           type="text"
           className="transaction-form__input"
           placeholder="Ex.: Aluguel, Supermercado"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          value={transactionTitle}
+          onChange={(e) => setTransactionTitle(e.target.value)}
+          disabled={saving}
         />
       </div>
 
@@ -78,6 +124,7 @@ function TransactionForm({ onAddTransaction }: TransactionFormProps) {
           placeholder="Detalhes opcionais"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          disabled={saving}
         />
       </div>
 
@@ -92,6 +139,8 @@ function TransactionForm({ onAddTransaction }: TransactionFormProps) {
           placeholder="0,00"
           value={amount || ""}
           onChange={(e) => setAmount(Number(e.target.value) || 0)}
+          disabled={saving}
+          required
         />
       </div>
 
@@ -102,50 +151,86 @@ function TransactionForm({ onAddTransaction }: TransactionFormProps) {
           className="transaction-form__select"
           value={category}
           onChange={(e) => setCategory(e.target.value as "income" | "expense")}
+          disabled={saving}
         >
           <option value="income">Receita</option>
           <option value="expense">Despesa</option>
         </select>
       </div>
 
-      <div className="transaction-form__field">
-        <label className="transaction-form__label" htmlFor="transaction-recurrence">Recorrência</label>
-        <select
-          id="transaction-recurrence"
-          className="transaction-form__select"
-          value={recurrenceType}
-          onChange={(e) => setRecurrenceType(e.target.value as RecurrenceType)}
-        >
-          <option value="single">Lançamento único</option>
-          <option value="fixed">Fixo mensal</option>
-          <option value="installment">Parcelado</option>
-        </select>
-      </div>
-
-      {recurrenceType === "installment" && (
+      {isEdit && (
         <div className="transaction-form__field">
-          <label className="transaction-form__label" htmlFor="transaction-installments">Número de parcelas</label>
-          <input
-            id="transaction-installments"
-            type="number"
-            min={1}
-            className="transaction-form__input"
-            value={totalInstallments}
-            onChange={(e) => setTotalInstallments(Number(e.target.value))}
-          />
+          <label className="transaction-form__label" htmlFor="transaction-status">Status</label>
+          <select
+            id="transaction-status"
+            className="transaction-form__select"
+            value={status}
+            onChange={(e) => setStatus(e.target.value as "pending" | "paid")}
+            disabled={saving}
+          >
+            <option value="pending">Pendente</option>
+            <option value="paid">Pago</option>
+          </select>
         </div>
+      )}
+
+      {!isEdit && (
+        <>
+          <div className="transaction-form__field">
+            <label className="transaction-form__label" htmlFor="transaction-recurrence">Recorrência</label>
+            <select
+              id="transaction-recurrence"
+              className="transaction-form__select"
+              value={recurrenceType}
+              onChange={(e) => setRecurrenceType(e.target.value as RecurrenceType)}
+              disabled={saving}
+            >
+              <option value="single">Lançamento único</option>
+              <option value="fixed">Fixo mensal</option>
+              <option value="installment">Parcelado</option>
+            </select>
+          </div>
+
+          {recurrenceType === "installment" && (
+            <div className="transaction-form__field">
+              <label className="transaction-form__label" htmlFor="transaction-installments">Número de parcelas</label>
+              <input
+                id="transaction-installments"
+                type="number"
+                min={1}
+                className="transaction-form__input"
+                value={totalInstallments}
+                onChange={(e) => setTotalInstallments(Number(e.target.value))}
+                disabled={saving}
+              />
+            </div>
+          )}
+        </>
+      )}
+
+      {isEdit && initialTransaction?.installmentNumber && initialTransaction?.totalInstallments && (
+        <p className="transaction-form__meta">
+          Parcela {initialTransaction.installmentNumber}/{initialTransaction.totalInstallments}
+        </p>
       )}
 
       <div className="transaction-form__row">
         <div className="transaction-form__field">
           <label className="transaction-form__label" htmlFor="transaction-month">Mês de referência</label>
-          <input
+          <select
             id="transaction-month"
-            type="month"
-            className="transaction-form__input"
+            className="transaction-form__select"
             value={referenceMonth}
-            onChange={(e) => setReferenceMonth(e.target.value)}
-          />
+            onChange={(e) => setReferenceMonth(Number(e.target.value))}
+            disabled={saving}
+            required
+          >
+            {MONTH_LABELS.map((label, index) => (
+              <option key={label} value={index + 1}>
+                {label}
+              </option>
+            ))}
+          </select>
         </div>
         <div className="transaction-form__field">
           <label className="transaction-form__label" htmlFor="transaction-due">
@@ -163,11 +248,14 @@ function TransactionForm({ onAddTransaction }: TransactionFormProps) {
               const value = e.target.value;
               setDueDay(value ? Number(value) : undefined);
             }}
+            disabled={saving}
           />
         </div>
       </div>
 
-      <button type="submit" className="transaction-form__submit">Adicionar lançamento</button>
+      <button type="submit" className="transaction-form__submit" disabled={saving}>
+        {saving ? "Salvando..." : (submitLabel ?? (isEdit ? "Salvar alterações" : "Adicionar lançamento"))}
+      </button>
     </form>
   );
 }

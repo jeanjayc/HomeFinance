@@ -48,6 +48,34 @@
   align-items: center;
   gap: 1rem;
   flex-shrink: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.transaction-item__actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.transaction-item__action {
+  font-size: 0.8125rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+  background: #fff;
+  cursor: pointer;
+  text-decoration: none;
+  color: #334155;
+}
+
+.transaction-item__action--edit:hover {
+  border-color: #3b82f6;
+  color: #2563eb;
+}
+
+.transaction-item__action--delete:hover {
+  border-color: #fca5a5;
+  color: #dc2626;
 }
 
 .transaction-item__toggle {

@@ -1,8 +1,10 @@
 using HomeFinance.Application.Interfaces;
 using HomeFinance.Domain.Models;
+using HomeFinance.Infra.DTOs.Request.Financas;
 using HomeFinance.Infra.DTOs.Response.Financas;
 using HomeFinance.Infra.Interfaces;
 using HomeFinance.Infra.Interfaces.DAO;
+using HomeFinance.Infra.Mappings;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace HomeFinance.Application.Services
@@ -12,6 +14,7 @@ namespace HomeFinance.Application.Services
         private readonly IFinanceRepository _financesRepository;
         private readonly IFinancaDAO _financaDao;
         private readonly IMemoryCache _memoryCache;
+
         public FinancesService(IFinanceRepository financesRepository, IFinancaDAO financaDAO, IMemoryCache memoryCache)
         {
             _financesRepository = financesRepository;
@@ -21,173 +24,147 @@ namespace HomeFinance.Application.Services
 
         public async Task AdicionarNovasDividas(Finances finance)
         {
-            try
-            {
-                if (finance is null) return;
+            if (finance is null) return;
 
-                finance.FinancaId = Guid.NewGuid();
-                await _financesRepository.AdicionarNovaDivida(finance);
-            }
-            catch (Exception ex)
-            {
-                //log
-                throw ex;
-            }
-
+            finance.FinancaId = Guid.NewGuid();
+            await _financesRepository.AdicionarNovaDivida(finance);
         }
+
+        public async Task<FinancaDTO> CriarFinanca(FinancaCreateRequest request)
+        {
+            var templateId = request.TemplateId ?? Guid.NewGuid();
+            var dataVencimento = FinancaMapping.ResolveDataVencimento(request);
+
+            if (request.TipoRecorrencia == "installment" && request.QtdParcelas is > 1)
+            {
+                FinancaDTO? lastDto = null;
+                for (var parcela = 1; parcela <= request.QtdParcelas; parcela++)
+                {
+                    var parcelaRequest = CloneForParcela(request, parcela, templateId, dataVencimento);
+                    var entity = FinancaMapping.ToEntity(parcelaRequest, FinancaMapping.ResolveDataVencimento(parcelaRequest));
+                    entity.FinancaId = Guid.NewGuid();
+                    entity.TemplateId = templateId;
+                    entity.NumeroParcela = parcela;
+                    entity.QtdParcelas = request.QtdParcelas;
+                    await _financesRepository.AdicionarNovaDivida(entity);
+                    lastDto = FinancaMapping.ToDto(entity);
+                }
+
+                return lastDto!;
+            }
+
+            var finance = FinancaMapping.ToEntity(request, dataVencimento);
+            finance.FinancaId = Guid.NewGuid();
+            finance.TemplateId = request.TipoRecorrencia != "single" ? templateId : request.TemplateId;
+            await _financesRepository.AdicionarNovaDivida(finance);
+            return FinancaMapping.ToDto(finance);
+        }
+
+        public async Task<FinancaDTO?> AtualizarFinanca(FinancaUpdateRequest request)
+        {
+            var financa = await BuscarFinancaPorId(request.IdFinanca);
+            if (financa is null)
+                return null;
+
+            financa.Titulo = request.Titulo;
+            financa.Descricao = request.DescricaoFinanca;
+            financa.Valor = request.Valor;
+            financa.DataVencimento = request.DataVencimento == default
+                ? FinancaMapping.ResolveDataVencimento(new FinancaCreateRequest
+                {
+                    MesReferencia = request.MesReferencia,
+                    DiaVencimento = request.DiaVencimento
+                })
+                : request.DataVencimento.ToUniversalTime();
+            financa.MesReferencia = request.MesReferencia;
+            financa.Categoria = request.Categoria;
+            financa.TipoRecorrencia = request.TipoRecorrencia;
+            financa.QtdParcelas = request.QtdParcelas;
+            financa.NumeroParcela = request.NumeroParcela;
+            financa.DiaVencimento = request.DiaVencimento;
+            financa.TemplateId = request.TemplateId;
+            financa.Pago = request.Pago;
+
+            var result = await _financesRepository.AtualizarFinanca(financa);
+            return FinancaMapping.ToDto(result);
+        }
+
         public async Task<IEnumerable<FinancaDTO>> BuscarTodasFinancas()
         {
-            try
-            {
-                var finances = await _financaDao.ObterTodasFinancas();
-                //var finances = await _memoryCache.GetOrCreateAsync("allfinances", async cacheEntry =>
-                //{
-                //    cacheEntry.SlidingExpiration = TimeSpan.FromSeconds(60);
-                //    cacheEntry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15);
-
-
-                //    return financesDb;
-
-                //});
-
-                return finances;
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            return await _financaDao.ObterTodasFinancas();
         }
 
         public async Task<IEnumerable<FinancaDTO>> BuscarTodasFinancasNaoPagas()
         {
-
-            var result = await _financaDao.ObterTodasFinancasNaoPagas();
-            return result;
+            return await _financaDao.ObterTodasFinancasNaoPagas();
         }
+
         public async Task<Finances> BuscarFinancaPorId(Guid id)
         {
-            try
-            {
-                return await _financesRepository.ObterFinancaPorId(id);
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            return await _financesRepository.ObterFinancaPorId(id);
         }
+
         public async Task<Finances> BuscarFinancaPorNome(string name)
         {
-            try
-            {
-                var result = await _financaDao.ObterFinancaPorDescricao(name);
-                var financa = new Finances
-                {
-                    FinancaId = result.IdFinanca,
-                    DataVencimento = result.DataVencimento,
-                    Descricao = result.DescricaoFinanca,
-                    Pago = result.Pago,
-                    Valor = result.Valor,
-                    QtdParcelas = Convert.ToInt32(result.QtdParcelas)
-                };
-
-                return financa;
-            }
-            catch (Exception)
-            {
-
-                throw;
-            }
+            var result = await _financaDao.ObterFinancaPorDescricao(name);
+            return MapDtoToEntity(result);
         }
+
         public async Task<Finances> AtualizarDadosFinancas(Guid id, Finances financaVM)
         {
             var financa = await BuscarFinancaPorId(id);
 
             if (financa is null)
-            {
-                throw new ArgumentNullException("Finança não encontrada");
-            }
+                throw new ArgumentNullException(nameof(financa), "Finança não encontrada");
 
             financa.Descricao = financaVM.Descricao;
+            financa.Titulo = financaVM.Titulo;
             financa.DataVencimento = financaVM.DataVencimento.ToUniversalTime();
             financa.Valor = financaVM.Valor;
+            financa.Categoria = financaVM.Categoria;
+            financa.MesReferencia = financaVM.MesReferencia;
+            financa.TipoRecorrencia = financaVM.TipoRecorrencia;
+            financa.QtdParcelas = financaVM.QtdParcelas;
+            financa.NumeroParcela = financaVM.NumeroParcela;
+            financa.DiaVencimento = financaVM.DiaVencimento;
+            financa.TemplateId = financaVM.TemplateId;
+            financa.Pago = financaVM.Pago;
 
-            var result = await _financesRepository.AtualizarFinanca(financa);
-            return result;
+            return await _financesRepository.AtualizarFinanca(financa);
         }
+
         public async Task DeletarFinancas(Guid id)
         {
             if (id == Guid.Empty)
-            {
                 return;
-            }
+
             await _financesRepository.DeletarFinanca(id);
         }
 
         public async Task<string> BuscarVencimentoProximo()
         {
-            var todasFinancas = await BuscarTodasFinancas();
-            var dataHJ = DateTime.Now.Day;
-
-            var proxVencimento = 0;
-
-            //foreach(var item in todasFinancas)
-            //{
-            //    proxVencimento = item.Installments.Where(f => Convert.ToDateTime(f.DueDate).Day - dataHJ == 1)
-            //        .Select(div => div.Finance.FinanceName).ToList();
-            //}
-
-            //if (proxVencimento.Count is 0)
-            //    return "Não há contas com vencimento para amanhã";
-
-            //var contasProxVencimento = string.Join(",", proxVencimento);
-            //var venceAmanha = $"Contas a vencer amanhã: {contasProxVencimento}";
-
-            return "";
+            await BuscarTodasFinancas();
+            return string.Empty;
         }
 
         public async Task<decimal> CalcularGastos(decimal renda)
         {
-            var financas = await BuscarTodasFinancas();
-            var somaGastos = 0m;
-
-            foreach (var item in financas)
-            {
-                //somaGastos = item.Installments.Sum(fin => fin.Price);
-            }
-
-            var valorAbatidoNaRenda = renda - somaGastos;
-
-            return valorAbatidoNaRenda;
+            await BuscarTodasFinancas();
+            return renda;
         }
-
-
 
         public async Task<decimal> AlterarValorPago(Guid id)
         {
-            try
-            {
-                var finances = await BuscarFinancaPorId(id);
+            var finances = await BuscarFinancaPorId(id);
 
-                if (finances is null)
-                    throw new ArgumentNullException("Finança não encontrada");
+            if (finances is null)
+                throw new ArgumentNullException(nameof(finances), "Finança não encontrada");
 
-                finances.Pago = finances.Pago is true ? finances.Pago = false : finances.Pago = true;
+            finances.Pago = !finances.Pago;
+            await _financesRepository.AtualizarFinanca(finances);
 
-                await _financesRepository.AtualizarFinanca(finances);
-
-                var totalDividas = await SomarTotalFinancas();
-
-                var valorAtualizado = totalDividas - finances.Valor;
-
-                return valorAtualizado;
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            var totalDividas = await SomarTotalFinancas();
+            return totalDividas - finances.Valor;
         }
 
         public Task<int> DesmarcarTodasFinancasPagasAsync()
@@ -198,29 +175,56 @@ namespace HomeFinance.Application.Services
         public async Task<decimal> SomarTotalFinancas()
         {
             var todasFinancas = await BuscarFinancasNaoPagas();
+            return todasFinancas.Sum(finance => finance.Valor);
+        }
 
-            var result = 0m;
-
-            foreach (var finance in todasFinancas)
+        private static Finances MapDtoToEntity(FinancaDTO result)
+        {
+            return new Finances
             {
-                result += finance.Valor;
-            }
+                FinancaId = result.IdFinanca,
+                Titulo = result.Titulo,
+                DataVencimento = result.DataVencimento,
+                Descricao = result.DescricaoFinanca ?? string.Empty,
+                Pago = result.Pago,
+                Valor = result.Valor,
+                QtdParcelas = result.QtdParcelas,
+                Categoria = result.Categoria,
+                MesReferencia = result.MesReferencia,
+                TipoRecorrencia = result.TipoRecorrencia,
+                NumeroParcela = result.NumeroParcela,
+                DiaVencimento = result.DiaVencimento,
+                TemplateId = result.TemplateId
+            };
+        }
 
-            return result;
+        private static FinancaCreateRequest CloneForParcela(
+            FinancaCreateRequest request,
+            int parcela,
+            Guid templateId,
+            DateTime baseDueDate)
+        {
+            var dueDate = baseDueDate.AddMonths(parcela - 1);
+            return new FinancaCreateRequest
+            {
+                Titulo = request.Titulo,
+                DescricaoFinanca = request.DescricaoFinanca,
+                Valor = request.Valor,
+                DataVencimento = dueDate,
+                MesReferencia = dueDate.Month,
+                Categoria = request.Categoria,
+                TipoRecorrencia = request.TipoRecorrencia,
+                QtdParcelas = request.QtdParcelas,
+                NumeroParcela = parcela,
+                DiaVencimento = request.DiaVencimento ?? dueDate.Day,
+                TemplateId = templateId,
+                Pago = request.Pago
+            };
         }
 
         private async Task<List<Finances>> BuscarFinancasNaoPagas()
         {
-            try
-            {
-                var result = await _financesRepository.ListarTodasDividasNaoPagas();
-                return result;
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            return await _financesRepository.ListarTodasDividasNaoPagas();
         }
     }
 }

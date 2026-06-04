@@ -1,17 +1,30 @@
 import { type Transaction } from "../../types/Transaction";
 import Summary from "../../components/Summary/Summary";
+import PageStatus from "../../components/PageStatus/PageStatus";
 
-type DashboardProps ={
+type DashboardProps = {
   transactions: Transaction[];
+  loading: boolean;
+  error: string | null;
+  onRetry: () => void;
 };
 
-function getCurrentMonth(): string {
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  return `${now.getFullYear()}-${month}`;
+function getCurrentMonth(): number {
+  return new Date().getMonth() + 1;
 }
 
-function Dashboard({ transactions }: DashboardProps) {
+function Dashboard({ transactions, loading, error, onRetry }: DashboardProps) {
+  const status = <PageStatus loading={loading} error={error} onRetry={onRetry} />;
+
+  if (loading || error) {
+    return (
+      <div className="page page--dashboard">
+        <h1 className="page__title">Dashboard</h1>
+        {status}
+      </div>
+    );
+  }
+
   const currentMonth = getCurrentMonth();
   const monthTransactions = transactions.filter(
     (transaction) => transaction.referenceMonth === currentMonth
@@ -32,7 +45,8 @@ function Dashboard({ transactions }: DashboardProps) {
   const balance = totalIncome - totalExpense;
 
   const pendingExpenses = monthTransactions.filter(
-    (transaction) => transaction.category === "expense" && transaction.status === "pending"
+    (transaction) =>
+      transaction.category === "expense" && transaction.status === "pending"
   );
 
   const totalPendingExpenses = pendingExpenses.reduce((acc, transaction) => {
