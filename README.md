@@ -91,3 +91,52 @@ O campo `MesReferencia` é o **mês calendário de 1 a 12** (contrato único ent
 | `/transactions` | Lista com editar, excluir e marcar pago |
 | `/transactions/:id/edit` | Edição de lançamento |
 | `/new` | Novo lançamento |
+
+## Como fazer alterações e deployar no docker
+
+### Reconstruir e reiniciar (recomendado para desenvolvimento)
+
+Alterações nas aplicações 
+
+- `home finance spa`
+- `home finance backend`
+
+Após alterações no código para subir para o docker, etapas a seguir
+
+#### Para e remove os containers atuais
+```bash
+docker-compose down
+```
+
+#### Reconstroi as imagens sem cache
+```bash
+docker-compose build --no-cache
+```
+
+#### Sobe os containers novamente
+```bash
+docker-compose up -d
+```
+
+#### Verificar logs
+```bash
+docker-compose logs -f api  # ou nome do seu serviço .NET
+```
+
+## Como executar SELECT no PostgreSQL dentro do Docker
+
+### Primeiro, liste os containers para encontrar o nome do PostgreSQL
+```bash
+docker ps
+```
+
+### Acesse o container 
+```bash
+docker exec -it homefinance-db psql -U postgres -d HomeFinance
+```
+
+### Execute um select simples para ver alguns dados salvos
+```bash
+SELECT * FROM financas LIMIT 5;
+```
+

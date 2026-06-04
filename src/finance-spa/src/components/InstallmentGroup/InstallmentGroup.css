@@ -1,0 +1,67 @@
+.installment-group {
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.installment-group:last-child {
+  border-bottom: none;
+}
+
+.installment-group__header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.875rem 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.installment-group__header:hover {
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.installment-group__icon {
+  flex-shrink: 0;
+  font-size: 1.125rem;
+  line-height: 1.4;
+}
+
+.installment-group__chevron {
+  flex-shrink: 0;
+  margin-top: 0.15rem;
+  font-size: 0.75rem;
+  color: #64748b;
+  transition: transform 0.15s ease;
+}
+
+.installment-group__chevron--expanded {
+  transform: rotate(90deg);
+}
+
+.installment-group__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.installment-group__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #1a1d21;
+}
+
+.installment-group__summary {
+  margin: 0.25rem 0 0;
+  font-size: 0.8125rem;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.installment-group__children {
+  padding-bottom: 0.5rem;
+}

@@ -15,6 +15,8 @@ export interface Transaction {
   totalInstallments?: number;
   installmentNumber?: number;
   dueDay?: number;
+  /** Data de vencimento (ISO), alinhada ao backend DataVencimento. */
+  dueDate?: string;
   templateId?: string;
 }
 

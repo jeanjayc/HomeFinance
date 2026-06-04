@@ -40,6 +40,7 @@ export function toTransaction(dto: FinancaDTO): Transaction {
     totalInstallments: dto.qtdParcelas ?? undefined,
     installmentNumber: dto.numeroParcela ?? undefined,
     dueDay: dto.diaVencimento ?? undefined,
+    dueDate: dto.dataVencimento,
     templateId: dto.templateId ?? undefined,
   };
 }
@@ -49,7 +50,9 @@ export function toCreateRequest(transaction: Transaction): FinancaCreateRequest 
     titulo: transaction.title || null,
     descricaoFinanca: transaction.description || transaction.title || "Lançamento",
     valor: transaction.amount,
-    dataVencimento: resolveDueDate(transaction.referenceMonth, transaction.dueDay),
+    dataVencimento:
+      transaction.dueDate ??
+      resolveDueDate(transaction.referenceMonth, transaction.dueDay),
     mesReferencia: transaction.referenceMonth,
     categoria: transaction.category,
     tipoRecorrencia: transaction.recurrenceType,
@@ -67,7 +70,9 @@ export function toUpdateRequest(transaction: Transaction): FinancaUpdateRequest 
     titulo: transaction.title || null,
     descricaoFinanca: transaction.description || transaction.title || "Lançamento",
     valor: transaction.amount,
-    dataVencimento: resolveDueDate(transaction.referenceMonth, transaction.dueDay),
+    dataVencimento:
+      transaction.dueDate ??
+      resolveDueDate(transaction.referenceMonth, transaction.dueDay),
     mesReferencia: transaction.referenceMonth,
     categoria: transaction.category,
     tipoRecorrencia: transaction.recurrenceType,

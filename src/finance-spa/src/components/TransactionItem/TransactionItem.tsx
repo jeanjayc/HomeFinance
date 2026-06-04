@@ -10,6 +10,9 @@ type TransactionItemProps = {
   status: "pending" | "paid";
   installmentNumber?: number;
   totalInstallments?: number;
+  displayLabel?: string;
+  hideInstallmentMeta?: boolean;
+  variant?: "default" | "installment-child";
   onTogglePaid: (id: string) => void;
   onDelete: () => void;
 };
@@ -23,20 +26,29 @@ function TransactionItem({
   status,
   installmentNumber,
   totalInstallments,
+  displayLabel,
+  hideInstallmentMeta = false,
+  variant = "default",
   onTogglePaid,
   onDelete,
 }: TransactionItemProps) {
   const isIncome = category === "income";
   const isPaid = status === "paid";
   const hasInstallments =
+    !hideInstallmentMeta &&
     typeof installmentNumber === "number" &&
     typeof totalInstallments === "number" &&
     totalInstallments > 1;
-  const displayTitle = title || description || "Sem título";
+  const displayTitle =
+    displayLabel ?? (title || description || "Sem título");
+  const showDescription =
+    variant === "default" && !displayLabel && title && description;
 
   return (
     <div
-      className={`transaction-item ${isPaid ? "transaction-item--paid" : ""}`}
+      className={`transaction-item ${isPaid ? "transaction-item--paid" : ""} ${
+        variant === "installment-child" ? "transaction-item--child" : ""
+      }`}
     >
       <div className="transaction-item__info">
         <p
@@ -46,7 +58,7 @@ function TransactionItem({
         >
           {displayTitle}
         </p>
-        {title && description && (
+        {showDescription && (
           <p className="transaction-item__description">{description}</p>
         )}
         {hasInstallments && (
