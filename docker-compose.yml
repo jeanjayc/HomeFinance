@@ -27,6 +27,7 @@ services:
       ConnectionStrings__Connection: Host=postgres;Port=5432;Database=${POSTGRES_DB:-HomeFinance};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}
       Cors__AllowedOrigins__0: http://localhost:3000
       Cors__AllowedOrigins__1: http://frontend:3000
+      Cors__AllowedOrigins__2: http://192.168.3.27:3000
     ports:
       - "5000:5000"
     depends_on:
