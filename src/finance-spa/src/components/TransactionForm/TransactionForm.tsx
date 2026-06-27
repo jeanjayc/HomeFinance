@@ -25,6 +25,19 @@ type TransactionFormProps = {
   title?: string;
 };
 
+// Função de fallback para UUID
+function generateUUID() {
+  if (crypto.randomUUID) {
+    return crypto.randomUUID();
+  }
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    const r = Math.random() * 16 | 0;
+    const v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
+
+
 function getCurrentMonth(): number {
   return new Date().getMonth() + 1;
 }
@@ -64,7 +77,7 @@ function TransactionForm({
     const month = referenceMonth || getCurrentMonth();
 
     const transaction: Transaction = {
-      id: initialTransaction?.id ?? crypto.randomUUID(),
+      id: initialTransaction?.id ?? generateUUID(),
       title: transactionTitle,
       description,
       amount,
