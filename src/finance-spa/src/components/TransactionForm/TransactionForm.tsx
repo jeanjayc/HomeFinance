@@ -1,21 +1,7 @@
 import { useState } from "react";
 import { type Transaction, type RecurrenceType } from "../../types/Transaction";
+import { getCurrentMonth, MONTH_LABELS } from "../../utils/months";
 import "./TransactionForm.css";
-
-const MONTH_LABELS = [
-  "Janeiro",
-  "Fevereiro",
-  "Março",
-  "Abril",
-  "Maio",
-  "Junho",
-  "Julho",
-  "Agosto",
-  "Setembro",
-  "Outubro",
-  "Novembro",
-  "Dezembro",
-];
 
 type TransactionFormProps = {
   onSubmit: (transaction: Transaction) => void | Promise<void>;
@@ -35,11 +21,6 @@ function generateUUID() {
     const v = c === 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
-}
-
-
-function getCurrentMonth(): number {
-  return new Date().getMonth() + 1;
 }
 
 function TransactionForm({

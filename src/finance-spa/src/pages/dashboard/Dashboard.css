@@ -1,0 +1,94 @@
+.dashboard__month-nav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+}
+
+.dashboard__month-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background: #f8fafc;
+  color: #334155;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.dashboard__month-btn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.dashboard__month-label {
+  min-width: 7rem;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: #1a1d21;
+  text-align: center;
+}
+
+.dashboard__month-badge {
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #0369a1;
+  background: #e0f2fe;
+  border-radius: 999px;
+}
+
+.dashboard__current-month-btn {
+  margin-left: 0.25rem;
+  padding: 0.25rem 0.625rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #0369a1;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.dashboard__current-month-btn:hover {
+  color: #0284c7;
+}
+
+.dashboard__pending {
+  margin-top: 1rem;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  padding: 1.25rem 1.5rem;
+}
+
+.dashboard__pending-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.0625rem;
+}
+
+.dashboard__pending-text {
+  margin: 0 0 0.5rem;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.dashboard__pending-list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.1rem;
+  font-size: 0.9rem;
+  color: #1f2933;
+}
