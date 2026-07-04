@@ -26,7 +26,6 @@ function NewTransaction({ onAddTransaction, saving, error }: NewTransactionProps
 
   return (
     <div className="page page--new-transaction">
-      <h1 className="page__title">Novo lançamento</h1>
       <PageStatus error={error ?? submitError} />
       <TransactionForm onSubmit={handleAdd} saving={saving} />
     </div>

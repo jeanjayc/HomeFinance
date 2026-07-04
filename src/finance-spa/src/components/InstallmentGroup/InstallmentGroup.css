@@ -65,3 +65,23 @@
 .installment-group__children {
   padding-bottom: 0.5rem;
 }
+
+@media (max-width: 640px) {
+  .installment-group__header {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .installment-group__content {
+    flex-basis: calc(100% - 2.5rem);
+    min-width: 0;
+  }
+
+  .installment-group__title {
+    word-break: break-word;
+  }
+
+  .installment-group__summary {
+    word-break: break-word;
+  }
+}

@@ -18,7 +18,7 @@ function Summary({ income, expense, balance }: SummaryProps) {
         </p>
       </div>
       <div className="summary__card">
-        <h4 className="summary__label">Despesas</h4>
+        <h4 className="summary__label">Despesas pagas</h4>
         <p className="summary__value summary__value--expense">
           R$ {expense.toFixed(2)}
         </p>

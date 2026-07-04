@@ -57,3 +57,13 @@
 .read-the-docs {
   color: #888;
 }
+
+@media (max-width: 640px) {
+  #root {
+    padding: 1rem;
+  }
+
+  .page__title {
+    font-size: 1.25rem;
+  }
+}
