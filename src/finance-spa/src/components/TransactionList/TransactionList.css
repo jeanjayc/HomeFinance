@@ -1,7 +1,7 @@
 .transaction-list {
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px var(--color-shadow);
   padding: 1.25rem 1.5rem;
 }
 
@@ -9,14 +9,14 @@
   margin: 0 0 1rem;
   font-size: 1.0625rem;
   font-weight: 600;
-  color: #1a1d21;
+  color: var(--color-text);
 }
 
 .transaction-list__empty {
   margin: 0;
   padding: 1.5rem 0;
   font-size: 0.9375rem;
-  color: #64748b;
+  color: var(--color-text-secondary);
   text-align: center;
 }
 

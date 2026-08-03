@@ -1,7 +1,7 @@
 .transaction-form {
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px var(--color-shadow);
   padding: 1.75rem;
   margin-bottom: 1.5rem;
   max-width: 520px;
@@ -11,13 +11,13 @@
   margin: 0 0 1.25rem;
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1a1d21;
+  color: var(--color-text);
 }
 
 .transaction-form__meta {
   margin: 0 0 1rem;
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--color-text-secondary);
 }
 
 .transaction-form__field {
@@ -29,7 +29,7 @@
   margin-bottom: 0.35rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #4a5568;
+  color: var(--color-label);
 }
 
 .transaction-form__input,
@@ -38,9 +38,9 @@
   padding: 0.6rem 0.75rem;
   font-size: 0.9375rem;
   font-family: inherit;
-  color: #1a1d21;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  color: var(--color-text);
+  background: var(--color-input-bg);
+  border: 1px solid var(--color-border);
   border-radius: 8px;
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
   box-sizing: border-box;
@@ -48,27 +48,31 @@
 
 .transaction-form__input:hover,
 .transaction-form__select:hover {
-  border-color: #cbd5e1;
+  border-color: var(--color-text-muted);
 }
 
 .transaction-form__input:focus,
 .transaction-form__select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .transaction-form__input::placeholder {
-  color: #94a3b8;
+  color: var(--color-text-muted);
 }
 
 .transaction-form__select {
   cursor: pointer;
   appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%234a5568' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
   padding-right: 2rem;
+}
+
+[data-theme="dark"] .transaction-form__select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
 }
 
 .transaction-form__row {
@@ -84,7 +88,7 @@
   font-weight: 600;
   font-family: inherit;
   color: #fff;
-  background: #3b82f6;
+  background: var(--color-primary);
   border: none;
   border-radius: 8px;
   cursor: pointer;
@@ -92,7 +96,7 @@
 }
 
 .transaction-form__submit:hover {
-  background: #2563eb;
+  background: var(--color-primary-hover);
 }
 
 .transaction-form__submit:active {
@@ -101,12 +105,12 @@
 
 .transaction-form__submit:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35);
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
 }
 
 .transaction-form__optional {
   font-size: 0.75rem;
-  color: #94a3b8;
+  color: var(--color-text-muted);
   font-weight: 400;
   margin-left: 0.25rem;
 }

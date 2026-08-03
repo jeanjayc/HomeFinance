@@ -5,9 +5,9 @@
   gap: 1rem;
   margin-bottom: 1.5rem;
   padding: 0.75rem 1rem;
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px var(--color-shadow);
 }
 
 .dashboard__month-btn {
@@ -17,25 +17,25 @@
   width: 2.25rem;
   height: 2.25rem;
   padding: 0;
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--color-border);
   border-radius: 8px;
-  background: #f8fafc;
-  color: #334155;
+  background: var(--color-surface-muted);
+  color: var(--color-btn-text);
   font-size: 0.875rem;
   cursor: pointer;
   transition: background 0.15s, border-color 0.15s;
 }
 
 .dashboard__month-btn:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  background: var(--color-hover-surface);
+  border-color: var(--color-text-muted);
 }
 
 .dashboard__month-label {
   min-width: 7rem;
   font-size: 1.0625rem;
   font-weight: 600;
-  color: #1a1d21;
+  color: var(--color-text);
   text-align: center;
 }
 
@@ -44,8 +44,8 @@
   padding: 0.15rem 0.5rem;
   font-size: 0.75rem;
   font-weight: 500;
-  color: #0369a1;
-  background: #e0f2fe;
+  color: var(--color-badge-info-text);
+  background: var(--color-badge-info-bg);
   border-radius: 999px;
 }
 
@@ -55,7 +55,7 @@
   border: none;
   border-radius: 6px;
   background: transparent;
-  color: #0369a1;
+  color: var(--color-link);
   font-size: 0.8125rem;
   font-weight: 500;
   cursor: pointer;
@@ -64,30 +64,37 @@
 }
 
 .dashboard__current-month-btn:hover {
-  color: #0284c7;
+  color: var(--color-link-hover);
 }
 
 .dashboard__top-expenses,
 .dashboard__projection,
 .dashboard__pending {
   margin-top: 1rem;
-  background: #fff;
+  background: var(--color-surface);
   border-radius: 12px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px var(--color-shadow);
   padding: 1.25rem 1.5rem;
 }
 
 .dashboard__top-expenses-title,
-.dashboard__projection-title {
+.dashboard__projection-title,
+.dashboard__pending-title {
   margin: 0 0 0.75rem;
   font-size: 1.0625rem;
+  color: var(--color-text);
 }
 
 .dashboard__top-expenses-text,
-.dashboard__projection-text {
+.dashboard__projection-text,
+.dashboard__pending-text {
   margin: 0;
   font-size: 0.9rem;
-  color: #64748b;
+  color: var(--color-text-secondary);
+}
+
+.dashboard__pending-text {
+  margin-bottom: 0.5rem;
 }
 
 .dashboard__top-expenses-list {
@@ -103,11 +110,11 @@
   gap: 1rem;
   padding: 0.5rem 0;
   font-size: 0.9rem;
-  color: #1f2933;
+  color: var(--color-text);
 }
 
 .dashboard__top-expenses-item + .dashboard__top-expenses-item {
-  border-top: 1px solid #f1f5f9;
+  border-top: 1px solid var(--color-border-muted);
 }
 
 .dashboard__top-expenses-name {
@@ -124,7 +131,7 @@
 
 .dashboard__top-expenses-amount {
   font-weight: 600;
-  color: #dc2626;
+  color: var(--color-expense);
 }
 
 .dashboard__top-expenses-badge {
@@ -135,13 +142,13 @@
 }
 
 .dashboard__top-expenses-badge--paid {
-  color: #047857;
-  background: #d1fae5;
+  color: var(--color-badge-paid-text);
+  background: var(--color-badge-paid-bg);
 }
 
 .dashboard__top-expenses-badge--pending {
-  color: #b45309;
-  background: #fef3c7;
+  color: var(--color-badge-pending-text);
+  background: var(--color-badge-pending-bg);
 }
 
 .dashboard__projection-value {
@@ -151,27 +158,16 @@
 }
 
 .dashboard__projection-value--positive {
-  color: #059669;
+  color: var(--color-income);
 }
 
 .dashboard__projection-value--negative {
-  color: #dc2626;
-}
-
-.dashboard__pending-title {
-  margin: 0 0 0.75rem;
-  font-size: 1.0625rem;
-}
-
-.dashboard__pending-text {
-  margin: 0 0 0.5rem;
-  font-size: 0.9rem;
-  color: #64748b;
+  color: var(--color-expense);
 }
 
 .dashboard__pending-list {
   margin: 0.75rem 0 0;
   padding-left: 1.1rem;
   font-size: 0.9rem;
-  color: #1f2933;
+  color: var(--color-text);
 }
