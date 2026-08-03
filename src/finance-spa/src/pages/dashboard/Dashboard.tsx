@@ -112,6 +112,36 @@ function Dashboard({ transactions, loading, error, onRetry }: DashboardProps) {
 
 
 
+  const allExpenses = monthTransactions.filter(
+
+    (transaction) => transaction.category === "expense"
+
+  );
+
+
+
+  const totalAllExpenses = allExpenses.reduce(
+
+    (acc, transaction) => acc + transaction.amount,
+
+    0
+
+  );
+
+
+
+  const projectedBalance = totalIncome - totalAllExpenses;
+
+
+
+  const top3Expenses = [...allExpenses]
+
+    .sort((a, b) => b.amount - a.amount)
+
+    .slice(0, 3);
+
+
+
   return (
 
     <div className="page page--dashboard">
@@ -197,6 +227,106 @@ function Dashboard({ transactions, loading, error, onRetry }: DashboardProps) {
         balance={balance}
 
       />
+
+
+
+      <div className="dashboard__top-expenses">
+
+        <h3 className="dashboard__top-expenses-title">
+
+          Maiores despesas de {monthLabel}
+
+        </h3>
+
+        {top3Expenses.length === 0 ? (
+
+          <p className="dashboard__top-expenses-text">
+
+            Nenhuma despesa registrada para {monthLabel}.
+
+          </p>
+
+        ) : (
+
+          <ol className="dashboard__top-expenses-list">
+
+            {top3Expenses.map((transaction) => (
+
+              <li key={transaction.id} className="dashboard__top-expenses-item">
+
+                <span className="dashboard__top-expenses-name">
+
+                  {transaction.title || transaction.description || "Sem título"}
+
+                </span>
+
+                <span className="dashboard__top-expenses-meta">
+
+                  <span
+
+                    className={`dashboard__top-expenses-badge dashboard__top-expenses-badge--${transaction.status}`}
+
+                  >
+
+                    {transaction.status === "paid" ? "Paga" : "Pendente"}
+
+                  </span>
+
+                  <span className="dashboard__top-expenses-amount">
+
+                    R$ {transaction.amount.toFixed(2)}
+
+                  </span>
+
+                </span>
+
+              </li>
+
+            ))}
+
+          </ol>
+
+        )}
+
+      </div>
+
+
+
+      <div className="dashboard__projection">
+
+        <h3 className="dashboard__projection-title">
+
+          {projectedBalance >= 0 ? "Valor que sobrará" : "Valor que faltará"}
+
+        </h3>
+
+        <p
+
+          className={`dashboard__projection-value ${
+
+            projectedBalance >= 0
+
+              ? "dashboard__projection-value--positive"
+
+              : "dashboard__projection-value--negative"
+
+          }`}
+
+        >
+
+          R$ {Math.abs(projectedBalance).toFixed(2)}
+
+        </p>
+
+        <p className="dashboard__projection-text">
+
+          Receitas R$ {totalIncome.toFixed(2)} − Total de despesas R${" "}
+
+          {totalAllExpenses.toFixed(2)}
+
+        </p>
+
+      </div>
 
 
 

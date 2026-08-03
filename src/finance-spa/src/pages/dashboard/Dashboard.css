@@ -67,12 +67,95 @@
   color: #0284c7;
 }
 
+.dashboard__top-expenses,
+.dashboard__projection,
 .dashboard__pending {
   margin-top: 1rem;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   padding: 1.25rem 1.5rem;
+}
+
+.dashboard__top-expenses-title,
+.dashboard__projection-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.0625rem;
+}
+
+.dashboard__top-expenses-text,
+.dashboard__projection-text {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #64748b;
+}
+
+.dashboard__top-expenses-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: decimal;
+}
+
+.dashboard__top-expenses-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.5rem 0;
+  font-size: 0.9rem;
+  color: #1f2933;
+}
+
+.dashboard__top-expenses-item + .dashboard__top-expenses-item {
+  border-top: 1px solid #f1f5f9;
+}
+
+.dashboard__top-expenses-name {
+  flex: 1;
+  min-width: 0;
+}
+
+.dashboard__top-expenses-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.dashboard__top-expenses-amount {
+  font-weight: 600;
+  color: #dc2626;
+}
+
+.dashboard__top-expenses-badge {
+  padding: 0.15rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 999px;
+}
+
+.dashboard__top-expenses-badge--paid {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.dashboard__top-expenses-badge--pending {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+.dashboard__projection-value {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.dashboard__projection-value--positive {
+  color: #059669;
+}
+
+.dashboard__projection-value--negative {
+  color: #dc2626;
 }
 
 .dashboard__pending-title {
